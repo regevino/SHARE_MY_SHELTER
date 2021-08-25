@@ -13,8 +13,7 @@ public class Shelter {
 
     enum ShelterType {PRIVATE, PUBLIC}
 
-    Shelter(Context c, Location loc, String name)
-    {
+    Shelter(Context c, Location loc, String name, ShelterType type) {
 
     }
 
@@ -27,8 +26,7 @@ public class Shelter {
 
     public LiveData<LinkedList<ShelterVisualGuide>> visualStepsLiveData;
 
-    public void retrieveVisuals()
-    {
+    public void retrieveVisuals() {
 
     }
 }
