@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ShareMyShelter">
         <activity
+            android:name=".AddShelterActivity"
+            android:label="@string/app_name" />
+        <activity
             android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>

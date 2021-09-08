@@ -31,7 +31,7 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         final MapView map = binding.mapView;
-        map.onCreate(savedInstanceState);
+//        map.onCreate(savedInstanceState);
 
         return root;
     }
