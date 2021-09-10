@@ -11,6 +11,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -43,15 +44,25 @@ public class AddShelterActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
 
-        dropdown.setOnClickListener(v -> {
-            String choice = dropdown.getSelectedItem().toString();
-            if (choice.equals("Current Location")) {
-                getCurrentLocation();
-                Toast.makeText(AddShelterActivity.this, location.toString(), Toast.LENGTH_LONG).show();
+        dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String choice = dropdown.getSelectedItem().toString();
+                if (choice.equals("Current Location")) {
+                    getCurrentLocation();
+                    if (location != null) {
+                        Toast.makeText(AddShelterActivity.this, location.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }
+                else
+                {
+                    //TODO let user enter address
+                }
             }
-            else
-            {
-                //TODO let user enter address
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
             }
         });
 
@@ -78,7 +89,11 @@ public class AddShelterActivity extends AppCompatActivity {
 
     private void getCurrentLocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(AddShelterActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
+        else
+        {
             fusedLocationClient.getLastLocation().addOnCompleteListener(task -> location = task.getResult());
         }
     }
