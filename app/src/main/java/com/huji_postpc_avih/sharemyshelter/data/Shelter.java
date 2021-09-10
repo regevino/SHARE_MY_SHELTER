@@ -11,9 +11,9 @@ import androidx.lifecycle.MutableLiveData;
 
 public class Shelter {
 
-    enum ShelterType {PRIVATE, PUBLIC}
+    public enum ShelterType {PRIVATE, PUBLIC}
 
-    Shelter(Context c, Location loc, String name, ShelterType type) {
+    public Shelter(Context c, Location loc, String name, ShelterType type) {
 
     }
 

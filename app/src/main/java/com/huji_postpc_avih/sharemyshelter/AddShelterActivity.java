@@ -1,26 +1,85 @@
 package com.huji_postpc_avih.sharemyshelter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.Toast;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.huji_postpc_avih.sharemyshelter.data.Shelter;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class AddShelterActivity extends AppCompatActivity {
+    private FusedLocationProviderClient fusedLocationClient;
+    private Location location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_shelter);
 
-        //get the spinner from the xml.
         Spinner dropdown = findViewById(R.id.locationSpinner);
-//create a list of items for the spinner.
         String[] items = new String[]{"Current Location", "Choose from Map"};
-//create an adapter to describe how the items are displayed, adapters are used in several places in android.
-//There are multiple variations of this, but this is the basic variant.
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
-//set the spinners adapter to the previously created one.
         dropdown.setAdapter(adapter);
+
+        dropdown.setOnClickListener(v -> {
+            String choice = dropdown.getSelectedItem().toString();
+            if (choice.equals("Current Location")) {
+                getCurrentLocation();
+                Toast.makeText(AddShelterActivity.this, location.toString(), Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                //TODO let user enter address
+            }
+        });
+
+        EditText name = findViewById(R.id.name);
+        Switch shelterMode = findViewById(R.id.shelterMode);
+        shelterMode.setOnClickListener(v -> {
+            if (shelterMode.getText().toString().equals("Public")) {
+                shelterMode.setText("Private");
+            } else {
+                shelterMode.setText("Public");
+            }
+        });
+
+        ImageButton addShelterButton = findViewById(R.id.addShelter);
+        addShelterButton.setOnClickListener(v -> {
+            if (location != null) {
+                if (shelterMode.isChecked()) {
+                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC);
+                }
+                Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE);
+            }
+        });
+    }
+
+    private void getCurrentLocation() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationClient.getLastLocation().addOnCompleteListener(task -> location = task.getResult());
+        }
     }
 }
