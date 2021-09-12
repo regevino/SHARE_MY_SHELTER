@@ -1,15 +1,17 @@
 package com.huji_postpc_avih.sharemyshelter.users;
 
-public abstract class UserManager {
+import java.util.UUID;
+
+public interface UserManager {
 
 
-    abstract void createNewUser(String username, String password);
+    void createNewUser(String username, String password);
 
-    abstract void authenticate(String username, String password);
+    void authenticate(String username, String password);
 
-    abstract String getCurrentUser();
+    UUID getCurrentUser();
 
-    abstract void signOut();
+    void signOut();
 
-    abstract void deleteAccount();
+    void deleteAccount();
 }

@@ -56,4 +56,24 @@ public class Shelter {
     private boolean validate() {
         return false;
     }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public UUID getOwnerId() {
+        return ownerId;
+    }
+
+    public ShelterType getShelterType() {
+        return shelterType;
+    }
 }

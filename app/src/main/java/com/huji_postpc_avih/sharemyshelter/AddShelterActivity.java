@@ -25,10 +25,12 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
+import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 
 public class AddShelterActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
@@ -66,24 +68,27 @@ public class AddShelterActivity extends AppCompatActivity {
         });
 
         EditText name = findViewById(R.id.name);
-        Switch shelterMode = findViewById(R.id.shelterMode);
-        shelterMode.setOnClickListener(v -> {
-            if (shelterMode.getText().toString().equals("Public")) {
-                shelterMode.setText("Private");
+        Switch isPrivate = findViewById(R.id.shelterMode);
+        isPrivate.setOnClickListener(v -> {
+            if (isPrivate.getText().toString().equals("Public")) {
+                isPrivate.setText("Private");
             } else {
-                shelterMode.setText("Public");
+                isPrivate.setText("Public");
             }
         });
 
         ImageButton addShelterButton = findViewById(R.id.addShelter);
         addShelterButton.setOnClickListener(v -> {
             if (location != null) {
-                if (shelterMode.isChecked()) {
-                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC);
+                if (isPrivate.isChecked()) {
+                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE);
+                    SheltersApp app = (SheltersApp) getApplicationContext();
+                    ShelterDB db = app.getDb();
+                    db.addPrivateShelter(newShelter, UUID.fromString("Brian May"));
                 }
                 else
                 {
-                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE);
+                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC);
                 }
             }
         });
