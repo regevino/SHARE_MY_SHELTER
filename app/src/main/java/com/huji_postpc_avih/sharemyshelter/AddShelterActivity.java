@@ -57,13 +57,12 @@ public class AddShelterActivity extends AppCompatActivity {
                 else
                 {
                     //TODO let user enter address
+
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
 
         EditText name = findViewById(R.id.name);
@@ -82,11 +81,18 @@ public class AddShelterActivity extends AppCompatActivity {
                 if (shelterMode.isChecked()) {
                     Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC);
                 }
-                Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE);
+                else
+                {
+                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE);
+                }
             }
         });
     }
 
+    /**
+     * Finds the location of the user.
+     * Asks for permission to access the user's location if needed.
+     */
     private void getCurrentLocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
