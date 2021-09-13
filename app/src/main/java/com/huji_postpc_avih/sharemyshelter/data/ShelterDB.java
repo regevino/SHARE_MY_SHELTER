@@ -1,10 +1,15 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
-import android.location.Location;
 
+import androidx.annotation.Nullable;
+
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 
@@ -13,7 +18,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.huji_postpc_avih.sharemyshelter.users.UserManager;
-import com.huji_postpc_avih.sharemyshelter.users.UserManager.*;
 
 public class ShelterDB {
     public static final String SHELTERS = "shelters";
@@ -23,6 +27,7 @@ public class ShelterDB {
     private UserManager manager; //todo init in constructor
     private static ShelterDB me = null;
     private FirebaseFirestore firebase;
+    private ListenerRegistration listenerRegistration;
 
 
     private ShelterDB(Context c) {
@@ -30,10 +35,29 @@ public class ShelterDB {
         firebase = app.getFirebaseApp();
         allShelters = new ArrayList<>();
         userShelters = new ArrayList<>();
+        updateLocalShelterLists();
+        firebase.collection(SHELTERS).addSnapshotListener((value, error) -> {
+            for (QueryDocumentSnapshot doc : value) {
+                if (!doc.exists())
+                {
+                    //TODO Erase from local list
+                    continue;
+                }
+                Shelter shelter = doc.toObject(Shelter.class);
+            }
+        });
+    }
+
+    private void updateLocalShelterLists() {
         firebase.collection(SHELTERS).get().addOnCompleteListener(task -> {
             for (QueryDocumentSnapshot document : task.getResult()) {
-                Shelter shelter = document.toObject(Shelter.class);
-                if (shelter.getOwnerId().equals(/*manager.getCurrentUser()*/UUID.fromString("Brian May")))
+                if (document.getBoolean("dummy")) {
+                    continue;
+                }
+                Shelter shelter = Shelter.fromJson(document.toObject(String.class));
+                String aString="JUST_A_TEST_STRING";
+                String result = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
+                if (shelter.getOwnerId().equals(/*manager.getCurrentUser()*/UUID.fromString(result)))
                 {
                     userShelters.add(shelter);
                 }
@@ -50,14 +74,13 @@ public class ShelterDB {
         return me;
     }
 
-    public boolean addPrivateShelter(Shelter shelterToAdd, UUID userId){
+    public void addPrivateShelter(Shelter shelterToAdd, UUID userId){
         firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
                 .set(shelterToAdd, SetOptions.merge()).addOnSuccessListener(command ->
                 firebase.collection(USERS).document(userId.toString())
-                        .set(shelterToAdd.getId(), SetOptions.merge())
+                        .collection("User's Shelters").document(shelterToAdd.getId().toString()).set(shelterToAdd.getId())
                         .addOnFailureListener(e -> {/*TODO*/}))
                 .addOnFailureListener(command -> {/*TODO*/});
-        return true;
     }
 
     Shelter getShelterById(UUID shelterId)

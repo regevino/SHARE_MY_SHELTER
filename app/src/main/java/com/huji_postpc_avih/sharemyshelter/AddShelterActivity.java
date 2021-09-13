@@ -84,7 +84,9 @@ public class AddShelterActivity extends AppCompatActivity {
                     Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE);
                     SheltersApp app = (SheltersApp) getApplicationContext();
                     ShelterDB db = app.getDb();
-                    db.addPrivateShelter(newShelter, UUID.fromString("Brian May"));
+                    String aString="JUST_A_TEST_STRING";
+                    String ownerId = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
+                    db.addPrivateShelter(newShelter, UUID.fromString(ownerId));
                 }
                 else
                 {

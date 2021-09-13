@@ -17,6 +17,14 @@ public class Shelter {
 
     public enum ShelterType {PRIVATE, PUBLIC}
 
+    public Shelter() {
+        location = null;
+        id = null;
+        ownerId = null;
+        name = null;
+        shelterType = ShelterType.PUBLIC;
+    }
+
     public Shelter(Context c, Location loc, String name, ShelterType type) {
         this.location = loc;
         this.name = name;
@@ -24,25 +32,25 @@ public class Shelter {
         this.id = UUID.randomUUID();
 
         // Get user's id from shared preferences:
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        String userId = sp.getString("ownerId", null);
-        Gson gson = new Gson();
-        if (userId != null) {
-            this.ownerId = gson.fromJson(userId, UUID.class);
-        }
-        else
-        {
-            this.ownerId = UUID.randomUUID();
-            String ownerIdToJson = gson.toJson(this.ownerId, UUID.class);
-            SharedPreferences.Editor editor = sp.edit();
-            editor.putString("ownerId", ownerIdToJson);
-            editor.apply();
-        }
+//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+//        String userId = sp.getString("ownerId", null);
+//        Gson gson = new Gson();
+//        if (userId != null) {
+//            this.ownerId = gson.fromJson(userId, UUID.class);
+//        }
+//        else
+//        {
+//            this.ownerId = UUID.randomUUID();
+//            String ownerIdToJson = gson.toJson(this.ownerId, UUID.class);
+//            SharedPreferences.Editor editor = sp.edit();
+//            editor.putString("ownerId", ownerIdToJson);
+//            editor.apply();
+//        }
     }
 
-    private final Location location;
+    private Location location;
     private String name;
-    private final UUID id, ownerId;
+    private UUID id, ownerId;
     private ShelterType shelterType;
     private LinkedList<ShelterVisualGuide> visualSteps;
     private MutableLiveData<LinkedList<ShelterVisualGuide>> _visualStepsLiveData;
@@ -75,5 +83,35 @@ public class Shelter {
 
     public ShelterType getShelterType() {
         return shelterType;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setOwnerId(UUID ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public void setShelterType(ShelterType shelterType) {
+        this.shelterType = shelterType;
+    }
+
+    public String toJson(){
+        Gson gson = new Gson();
+        return gson.toJson(this, Shelter.class);
+    }
+
+    public static Shelter fromJson(String jsonRepresentation) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonRepresentation, Shelter.class);
     }
 }
