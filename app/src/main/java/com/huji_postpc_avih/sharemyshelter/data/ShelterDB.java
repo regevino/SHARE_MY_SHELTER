@@ -14,7 +14,9 @@ import com.google.firebase.firestore.SetOptions;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import com.huji_postpc_avih.sharemyshelter.users.UserManager;
@@ -43,7 +45,7 @@ public class ShelterDB {
                     //TODO Erase from local list
                     continue;
                 }
-                Shelter shelter = doc.toObject(Shelter.class);
+                Shelter shelter = new Shelter(doc.toObject(ShelterWrapper.class));
             }
         });
     }
@@ -51,10 +53,10 @@ public class ShelterDB {
     private void updateLocalShelterLists() {
         firebase.collection(SHELTERS).get().addOnCompleteListener(task -> {
             for (QueryDocumentSnapshot document : task.getResult()) {
-                if (document.getBoolean("dummy")) {
+                if (document.getBoolean("dummy") != null) {
                     continue;
                 }
-                Shelter shelter = Shelter.fromJson(document.toObject(String.class));
+                Shelter shelter = new Shelter(document.toObject(ShelterWrapper.class));
                 String aString="JUST_A_TEST_STRING";
                 String result = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
                 if (shelter.getOwnerId().equals(/*manager.getCurrentUser()*/UUID.fromString(result)))
@@ -74,10 +76,10 @@ public class ShelterDB {
         return me;
     }
 
-    public void addPrivateShelter(Shelter shelterToAdd, UUID userId){
+    public void addPrivateShelter(Shelter shelterToAdd){
         firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
-                .set(shelterToAdd, SetOptions.merge()).addOnSuccessListener(command ->
-                firebase.collection(USERS).document(userId.toString())
+                .set(new ShelterWrapper(shelterToAdd)).addOnSuccessListener(command ->
+                firebase.collection(USERS).document(shelterToAdd.getOwnerId().toString())
                         .collection("User's Shelters").document(shelterToAdd.getId().toString()).set(shelterToAdd.getId())
                         .addOnFailureListener(e -> {/*TODO*/}))
                 .addOnFailureListener(command -> {/*TODO*/});

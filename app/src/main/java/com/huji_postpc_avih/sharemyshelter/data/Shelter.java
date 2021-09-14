@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.location.Location;
 import android.preference.PreferenceManager;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.UUID;
 
@@ -25,11 +26,12 @@ public class Shelter {
         shelterType = ShelterType.PUBLIC;
     }
 
-    public Shelter(Context c, Location loc, String name, ShelterType type) {
+    public Shelter(Context c, Location loc, String name, ShelterType type, UUID ownerId) {
         this.location = loc;
         this.name = name;
         this.shelterType = type;
         this.id = UUID.randomUUID();
+        this.ownerId = ownerId;
 
         // Get user's id from shared preferences:
 //        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
@@ -113,5 +115,24 @@ public class Shelter {
     public static Shelter fromJson(String jsonRepresentation) {
         Gson gson = new Gson();
         return gson.fromJson(jsonRepresentation, Shelter.class);
+    }
+
+    public HashMap<String, Object> getData() {
+        HashMap<String, Object> shelterData = new HashMap<>();
+        shelterData.put("location", this.location);
+        shelterData.put("id", this.id);
+        shelterData.put("ownerId", this.ownerId);
+        shelterData.put("name", this.name);
+        shelterData.put("type", this.shelterType);
+        return shelterData;
+    }
+
+    public Shelter(ShelterWrapper wrapper) {
+        Gson gson = new Gson();
+        this.location = gson.fromJson(wrapper.getLocation(), Location.class);
+        this.id = gson.fromJson(wrapper.getId(), UUID.class);
+        this.ownerId = gson.fromJson(wrapper.getOwnerId(), UUID.class);
+        this.name = wrapper.getName();
+        this.shelterType = wrapper.getType();
     }
 }

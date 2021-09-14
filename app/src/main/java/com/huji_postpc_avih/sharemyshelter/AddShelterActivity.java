@@ -80,17 +80,17 @@ public class AddShelterActivity extends AppCompatActivity {
         ImageButton addShelterButton = findViewById(R.id.addShelter);
         addShelterButton.setOnClickListener(v -> {
             if (location != null) {
+                String aString="JUST_A_TEST_STRING";
+                String ownerId = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
                 if (isPrivate.isChecked()) {
-                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE);
+                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE, UUID.fromString(ownerId));
                     SheltersApp app = (SheltersApp) getApplicationContext();
                     ShelterDB db = app.getDb();
-                    String aString="JUST_A_TEST_STRING";
-                    String ownerId = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
-                    db.addPrivateShelter(newShelter, UUID.fromString(ownerId));
+                    db.addPrivateShelter(newShelter);
                 }
                 else
                 {
-                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC);
+                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC, UUID.fromString(ownerId));
                 }
             }
         });
