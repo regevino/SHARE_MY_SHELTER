@@ -24,6 +24,7 @@ public class Shelter {
         ownerId = null;
         name = null;
         shelterType = ShelterType.PUBLIC;
+        this.isOpen = false;
     }
 
     public Shelter(Context c, Location loc, String name, ShelterType type, UUID ownerId) {
@@ -32,6 +33,7 @@ public class Shelter {
         this.shelterType = type;
         this.id = UUID.randomUUID();
         this.ownerId = ownerId;
+        this.isOpen = true;
 
         // Get user's id from shared preferences:
 //        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
@@ -50,6 +52,7 @@ public class Shelter {
 //        }
     }
 
+    private boolean isOpen;
     private Location location;
     private String name;
     private UUID id, ownerId;
@@ -85,6 +88,14 @@ public class Shelter {
 
     public ShelterType getShelterType() {
         return shelterType;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
     public void setLocation(Location location) {
@@ -134,5 +145,6 @@ public class Shelter {
         this.ownerId = gson.fromJson(wrapper.getOwnerId(), UUID.class);
         this.name = wrapper.getName();
         this.shelterType = wrapper.getType();
+        this.isOpen = wrapper.isOpen();
     }
 }

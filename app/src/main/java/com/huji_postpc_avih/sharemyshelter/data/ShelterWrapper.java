@@ -3,6 +3,7 @@ package com.huji_postpc_avih.sharemyshelter.data;
 import com.google.gson.Gson;
 
 public class ShelterWrapper {
+    private boolean isOpen;
     private String location;
     private String id;
     private String ownerId;
@@ -18,6 +19,7 @@ public class ShelterWrapper {
         ownerId = gson.toJson(shelter.getOwnerId());
         name = shelter.getName();
         type = shelter.getShelterType();
+        isOpen = shelter.isOpen();
     }
 
     public String getLocation() {
@@ -38,5 +40,9 @@ public class ShelterWrapper {
 
     public Shelter.ShelterType getType() {
         return type;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
     }
 }

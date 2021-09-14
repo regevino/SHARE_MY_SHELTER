@@ -35,8 +35,8 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
         Shelter shelter = userShelters.get(position);
         holder.getName().setText(shelter.getName());
         Switch typeSwitch = holder.getTypeSwitch();
-        typeSwitch.setChecked(shelter.getShelterType().equals(Shelter.ShelterType.PRIVATE));
-        typeSwitch.setText(typeSwitch.isChecked() ? "Private" : "Public");
+        typeSwitch.setChecked(shelter.isOpen());
+        typeSwitch.setText(typeSwitch.isChecked() ? "Open" : "Closed");
     }
 
     @Override
