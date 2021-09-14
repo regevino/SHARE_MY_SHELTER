@@ -110,4 +110,8 @@ public class ShelterDB {
 //
 //    }
 
+
+    public ArrayList<Shelter> getUserShelters() {
+        return userShelters;
+    }
 }

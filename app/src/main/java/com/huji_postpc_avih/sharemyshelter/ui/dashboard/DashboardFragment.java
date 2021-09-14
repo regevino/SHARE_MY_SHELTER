@@ -12,11 +12,17 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.huji_postpc_avih.sharemyshelter.AddShelterActivity;
 import com.huji_postpc_avih.sharemyshelter.R;
+import com.huji_postpc_avih.sharemyshelter.SheltersApp;
+import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.databinding.FragmentDashboardBinding;
+
+import java.util.ArrayList;
 
 public class DashboardFragment extends Fragment {
 
@@ -31,6 +37,18 @@ public class DashboardFragment extends Fragment {
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        // Get list of current user's shelters:
+        SheltersApp app = (SheltersApp) root.getContext().getApplicationContext();
+        ArrayList<Shelter> userShelters = app.getDb().getUserShelters();
+
+        // Set RecyclerView of shelters, adapter etc.
+        RecyclerView sheltersList = root.findViewById(R.id.privateShelters);
+        SheltersAdapter adapter = new SheltersAdapter();
+        adapter.setUserShelters(userShelters);
+        sheltersList.setAdapter(adapter);
+        sheltersList.setLayoutManager(new LinearLayoutManager(root.getContext(), RecyclerView.VERTICAL, false));
+
+        // Add shelter button:
         FloatingActionButton addShelterButton = root.findViewById(R.id.floatingActionButton2);
         addShelterButton.setOnClickListener(v -> {
             startActivity(new Intent(root.getContext(), AddShelterActivity.class));
