@@ -45,6 +45,7 @@ public class DashboardFragment extends Fragment {
         RecyclerView sheltersList = root.findViewById(R.id.privateShelters);
         SheltersAdapter adapter = new SheltersAdapter();
         adapter.setUserShelters(userShelters);
+        adapter.setContext(root.getContext());
         sheltersList.setAdapter(adapter);
         sheltersList.setLayoutManager(new LinearLayoutManager(root.getContext(), RecyclerView.VERTICAL, false));
 

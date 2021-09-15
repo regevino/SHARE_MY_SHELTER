@@ -10,15 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.huji_postpc_avih.sharemyshelter.R;
+import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
+import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 
 import java.util.ArrayList;
 
 class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
     private ArrayList<Shelter> userShelters;
+    private Context context;
 
     public void setUserShelters(ArrayList<Shelter> userShelters) {
         this.userShelters = userShelters;
+    }
+
+    public void setContext(Context c) {
+        context = c;
     }
 
     @NonNull
@@ -37,6 +44,17 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
         Switch typeSwitch = holder.getTypeSwitch();
         typeSwitch.setChecked(shelter.isOpen());
         typeSwitch.setText(typeSwitch.isChecked() ? "Open" : "Closed");
+        typeSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Switch typeSwitch = holder.getTypeSwitch();
+                shelter.setOpen(typeSwitch.isChecked());
+                SheltersApp app = (SheltersApp) context.getApplicationContext();
+                ShelterDB db = app.getDb();
+                db.updateShelter(shelter);
+
+            }
+        });
     }
 
     @Override

@@ -1,9 +1,11 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -24,8 +26,8 @@ import com.huji_postpc_avih.sharemyshelter.users.UserManager;
 public class ShelterDB {
     public static final String SHELTERS = "shelters";
     public static final String USERS = "users";
-    private ArrayList<Shelter> allShelters;
-    private ArrayList<Shelter> userShelters;
+    private SheltersHolder allShelters;
+    private SheltersHolder userShelters;
     private UserManager manager; //todo init in constructor
     private static ShelterDB me = null;
     private FirebaseFirestore firebase;
@@ -35,35 +37,35 @@ public class ShelterDB {
     private ShelterDB(Context c) {
         SheltersApp app = (SheltersApp) c.getApplicationContext();
         firebase = app.getFirebaseApp();
-        allShelters = new ArrayList<>();
-        userShelters = new ArrayList<>();
+
         updateLocalShelterLists();
-        firebase.collection(SHELTERS).addSnapshotListener((value, error) -> {
-            for (QueryDocumentSnapshot doc : value) {
-                if (!doc.exists())
-                {
-                    //TODO Erase from local list
-                    continue;
-                }
-                Shelter shelter = new Shelter(doc.toObject(ShelterWrapper.class));
-            }
-        });
+//        listenerRegistration = firebase.collection(SHELTERS).addSnapshotListener((value, error) -> {
+//            for (QueryDocumentSnapshot doc : value) {
+//                Shelter shelter = new Shelter(doc.toObject(ShelterWrapper.class));
+//                if (!doc.exists()) {
+//                    //TODO: Erase from local list
+//                    userShelters.deleteShelter(shelter);
+//                    continue;
+//                }
+//            }
+//        });
     }
 
     private void updateLocalShelterLists() {
+        allShelters = new SheltersHolder(new ArrayList<>());
+        userShelters = new SheltersHolder(new ArrayList<>());
         firebase.collection(SHELTERS).get().addOnCompleteListener(task -> {
             for (QueryDocumentSnapshot document : task.getResult()) {
                 if (document.getBoolean("dummy") != null) {
                     continue;
                 }
-                Shelter shelter = new Shelter(document.toObject(ShelterWrapper.class));
-                String aString="JUST_A_TEST_STRING";
+                Shelter shelter = new Shelter(document.toObject(ShelterWrapper.class)); //TODO: why isOpen always comes False.
+                String aString = "JUST_A_TEST_STRING";
                 String result = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
-                if (shelter.getOwnerId().equals(/*manager.getCurrentUser()*/UUID.fromString(result)))
-                {
-                    userShelters.add(shelter);
+                if (shelter.getOwnerId().equals(/*manager.getCurrentUser()*/UUID.fromString(result))) {
+                    userShelters.addShelter(shelter);
                 }
-                allShelters.add(shelter);
+                allShelters.addShelter(shelter);
             }
 
         });
@@ -76,18 +78,38 @@ public class ShelterDB {
         return me;
     }
 
-    public void addPrivateShelter(Shelter shelterToAdd){
+    public void addPrivateShelter(Shelter shelterToAdd) {
         firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
                 .set(new ShelterWrapper(shelterToAdd)).addOnSuccessListener(command ->
                 firebase.collection(USERS).document(shelterToAdd.getOwnerId().toString())
-                        .collection("User's Shelters").document(shelterToAdd.getId().toString()).set(shelterToAdd.getId())
+                        .collection("User's Shelters").document(shelterToAdd.getId().toString()).set(shelterToAdd.getId()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        //when we upload new private shelter we need to update the *local* DB.
+                        updateLocalShelterLists();
+                    }
+                })
                         .addOnFailureListener(e -> {/*TODO*/}))
                 .addOnFailureListener(command -> {/*TODO*/});
+
     }
 
-    Shelter getShelterById(UUID shelterId)
-    {
-        for (Shelter shelter :allShelters) {
+    public void addPublicShelter(Shelter shelterToAdd) {
+        firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
+                .set(new ShelterWrapper(shelterToAdd));
+    }
+
+    public void updateShelter(Shelter shelter) {
+        //now its like addPublicShelter, we probably need to change it later.
+        firebase.collection(SHELTERS).document(shelter.getId().toString())
+                .set(new ShelterWrapper(shelter));
+
+
+    }
+
+
+    Shelter getShelterById(UUID shelterId) {
+        for (Shelter shelter : allShelters.getItemsList()) {
             if (shelter.getId().equals(shelterId)) {
                 return shelter;
             }
@@ -95,14 +117,12 @@ public class ShelterDB {
         return null;
     }
 
-    List<Shelter> getSheltersByUserId(UUID userId)
-    {
+    List<Shelter> getSheltersByUserId(UUID userId) {
 
         return null;
     }
 
-    boolean removePrivateShelter(UUID shelterId)
-    {
+    boolean removePrivateShelter(UUID shelterId) {
         return false;
     }
 //    UUID addUser(UUID userId)
@@ -112,6 +132,6 @@ public class ShelterDB {
 
 
     public ArrayList<Shelter> getUserShelters() {
-        return userShelters;
+        return userShelters.shelters;
     }
 }

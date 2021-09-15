@@ -55,16 +55,15 @@ public class AddShelterActivity extends AppCompatActivity {
                     if (location != null) {
                         Toast.makeText(AddShelterActivity.this, location.toString(), Toast.LENGTH_LONG).show();
                     }
-                }
-                else
-                {
+                } else {
                     //TODO let user enter address
 
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         EditText name = findViewById(R.id.name);
@@ -80,17 +79,17 @@ public class AddShelterActivity extends AppCompatActivity {
         ImageButton addShelterButton = findViewById(R.id.addShelter);
         addShelterButton.setOnClickListener(v -> {
             if (location != null) {
-                String aString="JUST_A_TEST_STRING";
+                String aString = "JUST_A_TEST_STRING";
                 String ownerId = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
+                SheltersApp app = (SheltersApp) getApplicationContext();
+                ShelterDB db = app.getDb();
                 if (isPrivate.isChecked()) {
                     Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE, UUID.fromString(ownerId));
-                    SheltersApp app = (SheltersApp) getApplicationContext();
-                    ShelterDB db = app.getDb();
                     db.addPrivateShelter(newShelter);
-                }
-                else
-                {
+                } else {
                     Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC, UUID.fromString(ownerId));
+                    db.addPublicShelter(newShelter);
+
                 }
             }
         });
@@ -104,9 +103,7 @@ public class AddShelterActivity extends AppCompatActivity {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(AddShelterActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
-        else
-        {
+        } else {
             fusedLocationClient.getLastLocation().addOnCompleteListener(task -> location = task.getResult());
         }
     }
