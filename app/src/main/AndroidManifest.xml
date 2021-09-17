@@ -3,6 +3,7 @@
     package="com.huji_postpc_avih.sharemyshelter">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
     <application
         android:name=".SheltersApp"
         android:allowBackup="true"
@@ -10,11 +11,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ShareMyShelter"
-        >
+        android:theme="@style/Theme.ShareMyShelter">
+        <activity
+            android:name=".ui.AllSheltersActivity"
+            android:exported="true" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/maps_API_key"/>
+            android:value="@string/maps_API_key" />
+
         <activity
             android:name=".AddShelterActivity"
             android:label="@string/app_name" />

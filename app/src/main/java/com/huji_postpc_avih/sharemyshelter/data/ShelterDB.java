@@ -134,4 +134,8 @@ public class ShelterDB {
     public ArrayList<Shelter> getUserShelters() {
         return userShelters.shelters;
     }
+
+    public ArrayList<Shelter> getAllShelters() {
+        return allShelters.shelters;
+    }
 }
