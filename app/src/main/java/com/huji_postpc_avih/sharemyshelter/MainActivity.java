@@ -19,7 +19,7 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.huji_postpc_avih.sharemyshelter.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity  {
 
     private ActivityMainBinding binding;
 
@@ -39,16 +39,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-        MapFragment mapFragment1 = (MapFragment)getFragmentManager().findFragmentById(R.id.map);
-        mapFragment1.getMapAsync(this);
+//        MapFragment mapFragment1 = (MapFragment)getFragmentManager().findFragmentByTag("mapFragment");
+//        mapFragment1.getMapAsync(this);
     }
 
-    @Override
-    public void onMapReady(GoogleMap googleMap) {
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(0, 0))
-                .title("Marker"));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), 12.0f));
-    }
+
 
 }

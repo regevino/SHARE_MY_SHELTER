@@ -45,4 +45,9 @@ public class ShelterWrapper {
     public boolean isOpen() {
         return isOpen;
     }
+
+    public void setOpen(boolean isOpen)
+    {
+        this.isOpen = isOpen;
+    }
 }

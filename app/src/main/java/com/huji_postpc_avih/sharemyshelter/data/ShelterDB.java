@@ -1,6 +1,7 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
+import android.content.Intent;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -32,10 +33,11 @@ public class ShelterDB {
     private static ShelterDB me = null;
     private FirebaseFirestore firebase;
     private ListenerRegistration listenerRegistration;
+    private final SheltersApp app;
 
 
     private ShelterDB(Context c) {
-        SheltersApp app = (SheltersApp) c.getApplicationContext();
+        app = (SheltersApp) c.getApplicationContext();
         firebase = app.getFirebaseApp();
 
         updateLocalShelterLists();
@@ -59,7 +61,7 @@ public class ShelterDB {
                 if (document.getBoolean("dummy") != null) {
                     continue;
                 }
-                Shelter shelter = new Shelter(document.toObject(ShelterWrapper.class)); //TODO: why isOpen always comes False.
+                Shelter shelter = new Shelter(document.toObject(ShelterWrapper.class));
                 String aString = "JUST_A_TEST_STRING";
                 String result = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
                 if (shelter.getOwnerId().equals(/*manager.getCurrentUser()*/UUID.fromString(result))) {
@@ -68,6 +70,7 @@ public class ShelterDB {
                 allShelters.addShelter(shelter);
             }
 
+            app.sendBroadcast(new Intent("Added"));
         });
     }
 
@@ -82,13 +85,11 @@ public class ShelterDB {
         firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
                 .set(new ShelterWrapper(shelterToAdd)).addOnSuccessListener(command ->
                 firebase.collection(USERS).document(shelterToAdd.getOwnerId().toString())
-                        .collection("User's Shelters").document(shelterToAdd.getId().toString()).set(shelterToAdd.getId()).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        //when we upload new private shelter we need to update the *local* DB.
-                        updateLocalShelterLists();
-                    }
-                })
+                        .collection("User's Shelters").document(shelterToAdd.getId().toString()).set(shelterToAdd.getId())
+                        .addOnSuccessListener(unused -> {
+                            //when we upload new private shelter we need to update the *local* DB.
+                            updateLocalShelterLists();
+                        })
                         .addOnFailureListener(e -> {/*TODO*/}))
                 .addOnFailureListener(command -> {/*TODO*/});
 

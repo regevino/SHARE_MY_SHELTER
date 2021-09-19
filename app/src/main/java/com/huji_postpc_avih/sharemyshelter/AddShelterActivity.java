@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -89,8 +93,8 @@ public class AddShelterActivity extends AppCompatActivity {
                 } else {
                     Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC, UUID.fromString(ownerId));
                     db.addPublicShelter(newShelter);
-
                 }
+                finish();
             }
         });
     }

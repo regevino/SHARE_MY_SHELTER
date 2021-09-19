@@ -49,6 +49,7 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
             public void onClick(View view) {
                 Switch typeSwitch = holder.getTypeSwitch();
                 shelter.setOpen(typeSwitch.isChecked());
+                typeSwitch.setText(typeSwitch.isChecked() ? "Open" : "Closed");
                 SheltersApp app = (SheltersApp) context.getApplicationContext();
                 ShelterDB db = app.getDb();
                 db.updateShelter(shelter);

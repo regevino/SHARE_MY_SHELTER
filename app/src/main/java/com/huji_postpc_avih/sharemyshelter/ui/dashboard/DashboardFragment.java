@@ -1,6 +1,9 @@
 package com.huji_postpc_avih.sharemyshelter.ui.dashboard;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +31,7 @@ public class DashboardFragment extends Fragment {
 
     private DashboardViewModel dashboardViewModel;
     private FragmentDashboardBinding binding;
+    private BroadcastReceiver receiver;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -54,12 +58,25 @@ public class DashboardFragment extends Fragment {
         addShelterButton.setOnClickListener(v -> {
             startActivity(new Intent(root.getContext(), AddShelterActivity.class));
         });
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction().equals("Added")) {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        };
+        app.registerReceiver(receiver, new IntentFilter("Added"));
+
         return root;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        SheltersApp app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
+        app.unregisterReceiver(receiver);
         binding = null;
     }
 }
