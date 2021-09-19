@@ -26,7 +26,7 @@ public class AllSheltersAdapter extends RecyclerView.Adapter<ShelterHolder>{
     public ShelterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View contextView = inflater.inflate(R.layout.row_shelter, parent, false);
+        View contextView = inflater.inflate(R.layout.row_all_shelters, parent, false);
         return new ShelterHolder(contextView);
     }
 
