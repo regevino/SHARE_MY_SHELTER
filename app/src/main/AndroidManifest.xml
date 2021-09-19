@@ -3,9 +3,8 @@
     package="com.huji_postpc_avih.sharemyshelter">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
-
 
     <application
         android:name=".SheltersApp"
@@ -15,10 +14,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShareMyShelter">
-        <activity android:name=".alerts.AlertRecievedActivity" android:launchMode="singleInstance" android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert">
-
-        </activity>
-
+        <activity android:name=".users.SignInActivity"></activity>
+        <activity
+            android:name=".alerts.AlertRecievedActivity"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"></activity>
         <activity
             android:name=".ui.AllSheltersActivity"
             android:exported="true" />

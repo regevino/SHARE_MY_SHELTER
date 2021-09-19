@@ -118,6 +118,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             // notificationId is a unique int for each notification that you must define
 
             startForeground(new Random(123456).nextInt(), notification);
+            // TODO Make sure service is moved back to background later.
         }
 
 

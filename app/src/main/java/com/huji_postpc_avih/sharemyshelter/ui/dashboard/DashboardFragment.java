@@ -8,10 +8,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -24,6 +27,8 @@ import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.databinding.FragmentDashboardBinding;
+import com.huji_postpc_avih.sharemyshelter.users.SignInActivity;
+import com.huji_postpc_avih.sharemyshelter.users.UserManagerFirebase;
 
 import java.util.ArrayList;
 
@@ -32,7 +37,7 @@ public class DashboardFragment extends Fragment {
     private DashboardViewModel dashboardViewModel;
     private FragmentDashboardBinding binding;
     private BroadcastReceiver receiver;
-
+    private UserManagerFirebase userManager;
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         dashboardViewModel =
@@ -40,7 +45,38 @@ public class DashboardFragment extends Fragment {
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        SheltersApp app = (SheltersApp) root.getContext().getApplicationContext();
+        userManager = app.getUserManager();
+        if(userManager.getCurrentUser() != null)
+        {
+            showUserShelters();
+        }
+        else
+        {
+            showAuthentication();
+        }
+        return root;
+    }
 
+    private void showAuthentication() {
+        LinearLayout layout = binding.getRoot().findViewById(R.id.layout_not_signed_in);
+        layout.setVisibility(View.VISIBLE);
+        Button signinButton = binding.getRoot().findViewById(R.id.singin);
+        DashboardFragment dashboardFragment = this;
+        signinButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(dashboardFragment.getContext(), SignInActivity.class);
+                startActivity(intent);
+            }
+        });
+        Button registerButton = binding.getRoot().findViewById(R.id.register);
+    }
+
+    private void showUserShelters() {
+        View root = binding.getRoot();
+        LinearLayout l = root.findViewById(R.id.layout_not_signed_in);
+        l.setVisibility(View.GONE);
         // Get list of current user's shelters:
         SheltersApp app = (SheltersApp) root.getContext().getApplicationContext();
         ArrayList<Shelter> userShelters = app.getDb().getUserShelters();
@@ -69,7 +105,7 @@ public class DashboardFragment extends Fragment {
         };
         app.registerReceiver(receiver, new IntentFilter("Added"));
 
-        return root;
+
     }
 
     @Override
@@ -78,5 +114,18 @@ public class DashboardFragment extends Fragment {
         SheltersApp app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
         app.unregisterReceiver(receiver);
         binding = null;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(userManager.getCurrentUser() != null)
+        {
+            showUserShelters();
+        }
+        else
+        {
+            showAuthentication();
+        }
     }
 }

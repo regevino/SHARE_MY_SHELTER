@@ -10,6 +10,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.huji_postpc_avih.sharemyshelter.alerts.MyFirebaseMessagingService;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
+import com.huji_postpc_avih.sharemyshelter.users.UserManagerFirebase;
 
 public class SheltersApp extends Application {
     public static final String NOTIFICATION_ALERTS_CHANNEL_NAME = "Red Alerts";
@@ -17,6 +18,7 @@ public class SheltersApp extends Application {
     public static final String NOTIFICATION_ALERTS_CHANNEL_ID = "12345";
     private FirebaseFirestore firebaseApp;
     private ShelterDB db;
+    private UserManagerFirebase userManager;
 
     @Override
     public void onCreate() {
@@ -24,7 +26,7 @@ public class SheltersApp extends Application {
         FirebaseApp.initializeApp(this);
         firebaseApp = FirebaseFirestore.getInstance();
         db = ShelterDB.getInstance(this);
-
+        userManager = UserManagerFirebase.getInstance();
 
 
         MyFirebaseMessagingService.initialiseMessaging(this);
@@ -59,5 +61,9 @@ public class SheltersApp extends Application {
     {
         Intent intent = new Intent(this, MyFirebaseMessagingService.class);
         startService(intent);
+    }
+
+    public UserManagerFirebase getUserManager() {
+        return userManager;
     }
 }

@@ -36,4 +36,38 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
         />
+
+    <LinearLayout
+        android:id="@+id/layout_not_signed_in"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0.6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/text_not_signed_in"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="You must be signed in to view your shelters" />
+
+        <Button
+            android:id="@+id/singin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal_700"
+            android:text="@string/common_signin_button_text" />
+
+        <Button
+            android:id="@+id/register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/purple_200"
+            android:text="@string/fui_title_register_email" />
+
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -29,7 +29,7 @@ public class ShelterDB {
     public static final String USERS = "users";
     private SheltersHolder allShelters;
     private SheltersHolder userShelters;
-    private UserManager manager; //todo init in constructor
+    private UserManager manager;
     private static ShelterDB me = null;
     private FirebaseFirestore firebase;
     private ListenerRegistration listenerRegistration;
@@ -39,7 +39,7 @@ public class ShelterDB {
     private ShelterDB(Context c) {
         app = (SheltersApp) c.getApplicationContext();
         firebase = app.getFirebaseApp();
-
+        manager = app.getUserManager();
         updateLocalShelterLists();
 //        listenerRegistration = firebase.collection(SHELTERS).addSnapshotListener((value, error) -> {
 //            for (QueryDocumentSnapshot doc : value) {

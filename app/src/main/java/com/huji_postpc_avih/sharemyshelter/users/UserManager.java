@@ -1,15 +1,16 @@
 package com.huji_postpc_avih.sharemyshelter.users;
 
-import java.util.UUID;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
 
 public interface UserManager {
 
 
-    void createNewUser(String username, String password);
+    Task<AuthResult> createNewUser(String username, String password);
 
-    void authenticate(String username, String password);
+    Task<AuthResult> authenticate(String username, String password);
 
-    UUID getCurrentUser();
+    String getCurrentUser();
 
     void signOut();
 
