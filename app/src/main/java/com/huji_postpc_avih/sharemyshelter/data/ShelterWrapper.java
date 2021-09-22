@@ -16,7 +16,7 @@ public class ShelterWrapper {
         Gson gson = new Gson();
         location = gson.toJson(shelter.getLocation());
         id = gson.toJson(shelter.getId());
-        ownerId = gson.toJson(shelter.getOwnerId());
+        ownerId = shelter.getOwnerId();
         name = shelter.getName();
         type = shelter.getShelterType();
         isOpen = shelter.isOpen();

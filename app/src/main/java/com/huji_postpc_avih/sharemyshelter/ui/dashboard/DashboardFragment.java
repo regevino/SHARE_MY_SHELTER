@@ -112,7 +112,9 @@ public class DashboardFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         SheltersApp app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
-        app.unregisterReceiver(receiver);
+        if (receiver != null) {
+            app.unregisterReceiver(receiver);
+        }
         binding = null;
     }
 

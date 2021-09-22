@@ -24,6 +24,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.huji_postpc_avih.sharemyshelter.MainActivity;
 import com.huji_postpc_avih.sharemyshelter.R;
+import com.huji_postpc_avih.sharemyshelter.SheltersApp;
+import com.huji_postpc_avih.sharemyshelter.data.Shelter;
+import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
@@ -62,9 +65,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        showShelters(googleMap);
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Marker"));
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), 12.0f));
+    }
+
+    private void showShelters(GoogleMap googleMap) {
+        SheltersApp app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
+        ShelterDB db = app.getDb();
+        for (Shelter shelter : db.getAllShelters()) {
+            double latitude = shelter.getLocation().getLatitude();
+            double longitude = shelter.getLocation().getLongitude();
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(latitude, longitude))
+                    .title(shelter.getName()));
+        }
     }
 }

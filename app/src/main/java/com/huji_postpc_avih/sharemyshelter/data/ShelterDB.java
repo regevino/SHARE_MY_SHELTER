@@ -53,7 +53,7 @@ public class ShelterDB {
 //        });
     }
 
-    private void updateLocalShelterLists() {
+    public void updateLocalShelterLists() {
         allShelters = new SheltersHolder(new ArrayList<>());
         userShelters = new SheltersHolder(new ArrayList<>());
         firebase.collection(SHELTERS).get().addOnCompleteListener(task -> {
@@ -62,9 +62,8 @@ public class ShelterDB {
                     continue;
                 }
                 Shelter shelter = new Shelter(document.toObject(ShelterWrapper.class));
-                String aString = "JUST_A_TEST_STRING";
-                String result = UUID.nameUUIDFromBytes(aString.getBytes()).toString();
-                if (shelter.getOwnerId().equals(/*manager.getCurrentUser()*/UUID.fromString(result))) {
+                String currentUser = manager.getCurrentUser();
+                if (shelter.getOwnerId().toString().equals(currentUser)) {
                     userShelters.addShelter(shelter);
                 }
                 allShelters.addShelter(shelter);
@@ -138,5 +137,9 @@ public class ShelterDB {
 
     public ArrayList<Shelter> getAllShelters() {
         return allShelters.shelters;
+    }
+
+    public UserManager getManager() {
+        return manager;
     }
 }

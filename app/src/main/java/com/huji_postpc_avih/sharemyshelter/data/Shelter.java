@@ -27,7 +27,7 @@ public class Shelter {
         this.isOpen = false;
     }
 
-    public Shelter(Context c, Location loc, String name, ShelterType type, UUID ownerId) {
+    public Shelter(Context c, Location loc, String name, ShelterType type, String ownerId) {
         this.location = loc;
         this.name = name;
         this.shelterType = type;
@@ -54,8 +54,8 @@ public class Shelter {
 
     private boolean isOpen;
     private Location location;
-    private String name;
-    private UUID id, ownerId;
+    private String name, ownerId;
+    private UUID id;
     private ShelterType shelterType;
     private LinkedList<ShelterVisualGuide> visualSteps;
     private MutableLiveData<LinkedList<ShelterVisualGuide>> _visualStepsLiveData;
@@ -82,7 +82,7 @@ public class Shelter {
         return id;
     }
 
-    public UUID getOwnerId() {
+    public String getOwnerId() {
         return ownerId;
     }
 
@@ -110,7 +110,7 @@ public class Shelter {
         this.id = id;
     }
 
-    public void setOwnerId(UUID ownerId) {
+    public void setOwnerId(String ownerId) {
         this.ownerId = ownerId;
     }
 
@@ -142,7 +142,7 @@ public class Shelter {
         Gson gson = new Gson();
         this.location = gson.fromJson(wrapper.getLocation(), Location.class);
         this.id = gson.fromJson(wrapper.getId(), UUID.class);
-        this.ownerId = gson.fromJson(wrapper.getOwnerId(), UUID.class);
+        this.ownerId = wrapper.getOwnerId();
         this.name = wrapper.getName();
         this.shelterType = wrapper.getType();
         this.isOpen = wrapper.isOpen();

@@ -25,8 +25,8 @@ public class SheltersApp extends Application {
         super.onCreate();
         FirebaseApp.initializeApp(this);
         firebaseApp = FirebaseFirestore.getInstance();
-        db = ShelterDB.getInstance(this);
         userManager = UserManagerFirebase.getInstance();
+        db = ShelterDB.getInstance(this);
 
 
         MyFirebaseMessagingService.initialiseMessaging(this);
@@ -47,7 +47,7 @@ public class SheltersApp extends Application {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = NOTIFICATION_ALERTS_CHANNEL_NAME;
             String description = NOTIFICATION_ALERTS_CHANNEL_DESC;
-            int importance = NotificationManager.IMPORTANCE_MAX;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(NOTIFICATION_ALERTS_CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance

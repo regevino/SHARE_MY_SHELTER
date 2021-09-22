@@ -13,6 +13,8 @@ import com.firebase.ui.auth.IdpResponse;
 import com.firebase.ui.auth.data.model.FirebaseAuthUIAuthenticationResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.huji_postpc_avih.sharemyshelter.SheltersApp;
+import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +53,9 @@ public class SignInActivity extends AppCompatActivity {
         if (result.getResultCode() == RESULT_OK) {
             // Successfully signed in
             FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            SheltersApp app = (SheltersApp) getApplicationContext();
+            ShelterDB db = app.getDb();
+            db.updateLocalShelterLists();
             // ...
         } else {
             // Sign in failed. If response is null the user canceled the
