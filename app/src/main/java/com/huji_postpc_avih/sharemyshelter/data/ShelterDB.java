@@ -63,7 +63,7 @@ public class ShelterDB {
                 }
                 Shelter shelter = new Shelter(document.toObject(ShelterWrapper.class));
                 String currentUser = manager.getCurrentUser();
-                if (shelter.getOwnerId().toString().equals(currentUser)) {
+                if (shelter.getOwnerId() != null && shelter.getOwnerId().equals(currentUser)) {
                     userShelters.addShelter(shelter);
                 }
                 allShelters.addShelter(shelter);
@@ -83,7 +83,7 @@ public class ShelterDB {
     public void addPrivateShelter(Shelter shelterToAdd) {
         firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
                 .set(new ShelterWrapper(shelterToAdd)).addOnSuccessListener(command ->
-                firebase.collection(USERS).document(shelterToAdd.getOwnerId().toString())
+                firebase.collection(USERS).document(shelterToAdd.getOwnerId())
                         .collection("User's Shelters").document(shelterToAdd.getId().toString()).set(shelterToAdd.getId())
                         .addOnSuccessListener(unused -> {
                             //when we upload new private shelter we need to update the *local* DB.
