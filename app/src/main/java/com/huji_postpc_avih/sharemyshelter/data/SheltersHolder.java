@@ -2,6 +2,7 @@ package com.huji_postpc_avih.sharemyshelter.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class SheltersHolder {
 
@@ -15,6 +16,15 @@ public class SheltersHolder {
         for (int i = 0, sheltersSize = shelters.size(); i < sheltersSize; i++) {
             Shelter shelter = shelters.get(i);
             if (shelterToDel.getId().equals(shelter.getId())) {
+                shelters.remove(i);
+            }
+        }
+    }
+
+    public void deleteShelter(UUID shelterId) {
+        for (int i = 0, sheltersSize = shelters.size(); i < sheltersSize; i++) {
+            Shelter shelter = shelters.get(i);
+            if (shelterId.equals(shelter.getId())) {
                 shelters.remove(i);
             }
         }

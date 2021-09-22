@@ -95,6 +95,7 @@ public class AddShelterActivity extends AppCompatActivity {
                 }
                 finish();
             }
+            Toast.makeText(this, "location is null,\n failed adding shelter", Toast.LENGTH_SHORT).show();
         });
     }
 

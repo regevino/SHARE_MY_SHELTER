@@ -123,6 +123,13 @@ public class ShelterDB {
     }
 
     boolean removePrivateShelter(UUID shelterId) {
+        firebase.collection(SHELTERS).document(shelterId.toString()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void unused) {
+                userShelters.deleteShelter(shelterId);
+                //TODO: notify the adapter to display the changes
+            }
+        });
         return false;
     }
 //    UUID addUser(UUID userId)
