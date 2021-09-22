@@ -58,5 +58,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging'
     implementation 'com.google.firebase:firebase-analytics'
 
+    implementation 'com.google.maps:google-maps-services:0.2.4'
+
 
 }

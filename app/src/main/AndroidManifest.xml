@@ -14,11 +14,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShareMyShelter">
-        <activity android:name=".users.SignInActivity"></activity>
+        <activity android:name=".navigation.NavigateToShelterActivity"></activity>
+        <activity android:name=".users.SignInActivity" />
         <activity
             android:name=".alerts.AlertRecievedActivity"
             android:launchMode="singleInstance"
-            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
         <activity
             android:name=".ui.AllSheltersActivity"
             android:exported="true" />
