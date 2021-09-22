@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -53,6 +54,11 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
         setContentView(R.layout.activity_navigate_to_shelter);
 
         db = ((SheltersApp) getApplication()).getDb();
