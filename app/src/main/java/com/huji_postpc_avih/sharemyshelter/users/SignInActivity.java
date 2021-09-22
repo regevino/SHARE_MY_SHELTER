@@ -64,7 +64,7 @@ public class SignInActivity extends AppCompatActivity {
             // ...
             if (response == null)
             {
-                onDestroy();
+                finish();
             }
             else
             {
@@ -73,6 +73,6 @@ public class SignInActivity extends AppCompatActivity {
 
 
         }
-        onDestroy();
+        finish();
     }
 }

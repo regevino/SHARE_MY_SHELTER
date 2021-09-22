@@ -9,6 +9,9 @@ import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.Tasks;
+
+import java.util.concurrent.ExecutionException;
 
 public class Navigator {
     private Activity activity;
@@ -25,11 +28,15 @@ public class Navigator {
     public Location getCurrentLocation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(this.activity);
 
-        if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        while (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this.activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
-            fusedLocationClient.getLastLocation().addOnCompleteListener(task -> location = task.getResult());
         }
+        try {
+            location = Tasks.await(fusedLocationClient.getLastLocation());
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+        }
+//        fusedLocationClient.getLastLocation().addOnCompleteListener(task -> location = task.getResult());
         return location;
     }
 }
