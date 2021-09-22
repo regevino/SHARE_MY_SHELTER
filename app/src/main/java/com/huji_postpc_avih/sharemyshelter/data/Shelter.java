@@ -1,9 +1,9 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.location.Location;
-import android.preference.PreferenceManager;
+
+import com.google.gson.Gson;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -11,8 +11,6 @@ import java.util.UUID;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-
-import com.google.gson.Gson;
 
 public class Shelter {
 
@@ -34,6 +32,8 @@ public class Shelter {
         this.id = UUID.randomUUID();
         this.ownerId = ownerId;
         this.isOpen = true;
+        _visualStepsLiveData = new MutableLiveData<>();
+        visualStepsLiveData = _visualStepsLiveData;
 
         // Get user's id from shared preferences:
 //        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
