@@ -10,16 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.huji_postpc_avih.sharemyshelter.AddShelterActivity;
@@ -31,6 +21,12 @@ import com.huji_postpc_avih.sharemyshelter.users.SignInActivity;
 import com.huji_postpc_avih.sharemyshelter.users.UserManagerFirebase;
 
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class DashboardFragment extends Fragment {
 
@@ -59,6 +55,8 @@ public class DashboardFragment extends Fragment {
     }
 
     private void showAuthentication() {
+        FloatingActionButton fab = binding.getRoot().findViewById(R.id.floatingActionButton2);
+        fab.setVisibility(View.GONE);
         LinearLayout layout = binding.getRoot().findViewById(R.id.layout_not_signed_in);
         layout.setVisibility(View.VISIBLE);
         Button signinButton = binding.getRoot().findViewById(R.id.singin);
@@ -91,6 +89,7 @@ public class DashboardFragment extends Fragment {
 
         // Add shelter button:
         FloatingActionButton addShelterButton = root.findViewById(R.id.floatingActionButton2);
+        addShelterButton.setVisibility(View.VISIBLE);
         addShelterButton.setOnClickListener(v -> {
             startActivity(new Intent(root.getContext(), AddShelterActivity.class));
         });
