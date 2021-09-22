@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Switch;
 
 import androidx.annotation.NonNull;
@@ -40,8 +42,11 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
     @Override
     public void onBindViewHolder(@NonNull ShelterHolder holder, int position) {
         Shelter shelter = userShelters.get(position);
-        holder.getName().setText(shelter.getName());
         Switch typeSwitch = holder.getTypeSwitch();
+        ImageView deleteButton = holder.getDeleteButton();
+
+
+        holder.getName().setText(shelter.getName());
         typeSwitch.setChecked(shelter.isOpen());
         typeSwitch.setText(typeSwitch.isChecked() ? "Open" : "Closed");
         typeSwitch.setOnClickListener(new View.OnClickListener() {
@@ -56,6 +61,17 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
 
             }
         });
+
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SheltersApp app = (SheltersApp) context.getApplicationContext();
+                ShelterDB db = app.getDb();
+                db.deletePrivateShelter(shelter.getId());
+            }
+        });
+
+
     }
 
     @Override

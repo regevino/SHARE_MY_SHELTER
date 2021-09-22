@@ -122,7 +122,7 @@ public class ShelterDB {
         return null;
     }
 
-    boolean removePrivateShelter(UUID shelterId) {
+    public boolean deletePrivateShelter(UUID shelterId) {
         firebase.collection(SHELTERS).document(shelterId.toString()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {

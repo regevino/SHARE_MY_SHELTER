@@ -84,6 +84,14 @@ public class AddShelterActivity extends AppCompatActivity {
 
         ImageButton addShelterButton = findViewById(R.id.addShelter);
         addShelterButton.setOnClickListener(v -> {
+//            //TODO: only for testing.
+//            if (location == null) {
+//                location = new Location("idan");
+//                location.setLongitude(35.217018d);
+//                location.setLatitude(31.771959d);
+//                Toast.makeText(this, "location is null,\n so uploading FAKE shelter", Toast.LENGTH_SHORT).show();
+//
+//            }
             if (location != null) {
                 SheltersApp app = (SheltersApp) getApplicationContext();
                 ShelterDB db = app.getDb();
@@ -96,8 +104,10 @@ public class AddShelterActivity extends AppCompatActivity {
                     db.addPublicShelter(newShelter);
                 }
                 finish();
+            }else{
+
+                Toast.makeText(this, "location is null,\n failed adding shelter", Toast.LENGTH_SHORT).show();
             }
-            Toast.makeText(this, "location is null,\n failed adding shelter", Toast.LENGTH_SHORT).show();
         });
     }
 }
