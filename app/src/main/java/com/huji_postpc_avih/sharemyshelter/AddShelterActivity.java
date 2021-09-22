@@ -30,6 +30,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
+import com.huji_postpc_avih.sharemyshelter.navigation.Navigator;
 
 import java.io.IOException;
 import java.util.List;
@@ -55,7 +56,8 @@ public class AddShelterActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String choice = dropdown.getSelectedItem().toString();
                 if (choice.equals("Current Location")) {
-                    getCurrentLocation();
+                    Navigator navigator = new Navigator(AddShelterActivity.this);
+                    location = navigator.getCurrentLocation();
                     if (location != null) {
                         Toast.makeText(AddShelterActivity.this, location.toString(), Toast.LENGTH_LONG).show();
                     }
@@ -97,18 +99,5 @@ public class AddShelterActivity extends AppCompatActivity {
             }
             Toast.makeText(this, "location is null,\n failed adding shelter", Toast.LENGTH_SHORT).show();
         });
-    }
-
-    /**
-     * Finds the location of the user.
-     * Asks for permission to access the user's location if needed.
-     */
-    private void getCurrentLocation() {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AddShelterActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        } else {
-            fusedLocationClient.getLastLocation().addOnCompleteListener(task -> location = task.getResult());
-        }
     }
 }
