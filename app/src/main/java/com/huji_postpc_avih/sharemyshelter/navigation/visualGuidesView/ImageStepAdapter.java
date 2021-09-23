@@ -28,7 +28,7 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
     {
         context = c;
         sh = shelter;
-        if (sh.visualStepsLiveData.getValue() == null)
+        if (sh.visualStepsLiveData == null || sh.visualStepsLiveData.getValue() == null)
         {
             sh.retrieveVisuals();
             sh.visualStepsLiveData.observe(owner, new Observer<LinkedList<ShelterVisualGuide>>() {

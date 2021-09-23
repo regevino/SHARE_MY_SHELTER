@@ -2,27 +2,31 @@ package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
-
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQueryBounds;
+import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.EventListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
+import com.huji_postpc_avih.sharemyshelter.users.UserManager;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
-import com.huji_postpc_avih.sharemyshelter.users.UserManager;
+import androidx.annotation.NonNull;
 
 public class ShelterDB {
     public static final String SHELTERS = "shelters";
@@ -100,7 +104,7 @@ public class ShelterDB {
     }
 
 
-    Shelter getShelterById(UUID shelterId) {
+    public Shelter getShelterById(UUID shelterId) {
         for (Shelter shelter : allShelters.getItemsList()) {
             if (shelter.getId().equals(shelterId)) {
                 return shelter;
@@ -129,6 +133,49 @@ public class ShelterDB {
             }
         });
         return false;
+    }
+
+    public Task<List<Shelter>> getNearbyShelters(double longitude, double latitude, int radius){
+
+        final GeoLocation center = new GeoLocation(latitude, longitude);
+        List<GeoQueryBounds> bounds = GeoFireUtils.getGeoHashQueryBounds(center, radius);
+        final List<Task<QuerySnapshot>> tasks = new ArrayList<>();
+        for (GeoQueryBounds b : bounds) {
+            Query q = firebase.collection(SHELTERS)
+                    .orderBy("geoHashForLocation")
+                    .startAt(b.startHash)
+                    .endAt(b.endHash);
+
+            tasks.add(q.get());
+        }
+        // Collect all the query results together into a single list
+        TaskCompletionSource<List<Shelter>> tcs = new TaskCompletionSource<>();
+        return Tasks.whenAllComplete(tasks).continueWithTask(new Continuation<List<Task<?>>, Task<List<Shelter>>>() {
+            @Override
+            public Task<List<Shelter>> then(@NonNull @NotNull Task<List<Task<?>>> t) throws Exception {
+                List<Shelter> matchingDocs = new ArrayList<>();
+
+                for (Task<QuerySnapshot> task : tasks) {
+                    QuerySnapshot snap = task.getResult();
+                    for (DocumentSnapshot doc : snap.getDocuments()) {
+                        double lat = doc.getDouble("lat");
+                        double lng = doc.getDouble("lng");
+
+                        // We have to filter out a few false positives due to GeoHash
+                        // accuracy, but most will match
+                        GeoLocation docLocation = new GeoLocation(lat, lng);
+                        double distanceInM = GeoFireUtils.getDistanceBetween(docLocation, center);
+                        if (distanceInM <= radius) {
+                            matchingDocs.add(new Shelter(doc.toObject(ShelterWrapper.class)));
+                        }
+                    }
+                }
+                tcs.setResult(matchingDocs);
+                return tcs.getTask();
+            }
+        });
+
+
     }
 
     public ArrayList<Shelter> getUserShelters() {

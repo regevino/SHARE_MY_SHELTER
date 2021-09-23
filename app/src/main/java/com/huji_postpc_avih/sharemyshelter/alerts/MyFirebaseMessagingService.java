@@ -2,13 +2,10 @@ package com.huji_postpc_avih.sharemyshelter.alerts;
 
 import android.app.Notification;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
-import android.os.IBinder;
 import android.util.Log;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -18,19 +15,18 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
+import com.huji_postpc_avih.sharemyshelter.navigation.NavigateToShelterActivity;
 
+import java.util.Date;
 import java.util.Random;
-import java.util.UUID;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
-import static com.google.firebase.messaging.Constants.MessageNotificationKeys.CHANNEL;
-import static com.google.firebase.messaging.Constants.MessageNotificationKeys.TAG;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
+    private static final String TAG = "FCMService";
 
     public static void initialiseMessaging(Context context)
     {
@@ -78,22 +74,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
         }
 
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
 
+        Intent fullScreenIntent = new Intent(this, AlertRecievedActivity.class);
+        long arrivalDeadline = new Date().getTime() + 1000 * 60 * 5;
+        fullScreenIntent.putExtra(NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME, arrivalDeadline);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-        Intent intent = new Intent(this, AlertRecievedActivity.class);
-//            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            intent.setFlags(Intent.FLAG_FROM_BACKGROUND);
-//            intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        getApplication().startActivity(intent);
+            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getApplication().startActivity(fullScreenIntent);
             }
         else {
             Log.d(TAG, "Starting with full screen intent");
-            Intent fullScreenIntent = new Intent(this, AlertRecievedActivity.class);
             fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
@@ -102,8 +94,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
                             .setSmallIcon(R.drawable.common_full_open_on_phone)
-                            .setContentTitle("Incoming call")
-                            .setContentText("(919) 555-1234")
+                            .setContentTitle("Red Alert!")
+                            .setContentText("Red Alert in your area")
                             .setPriority(NotificationCompat.PRIORITY_MAX)
 
                             // Use a full-screen intent only for the highest-priority alerts where you
