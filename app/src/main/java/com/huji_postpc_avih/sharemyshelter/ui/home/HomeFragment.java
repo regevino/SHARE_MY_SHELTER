@@ -69,18 +69,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(0, 0))
                 .title("Marker"));
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), 12.0f));
     }
 
     private void showShelters(GoogleMap googleMap) {
         SheltersApp app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
         ShelterDB db = app.getDb();
+        LatLng latlng = new LatLng(0, 0); //default...
         for (Shelter shelter : db.getAllShelters()) {
             double latitude = shelter.getLat();
             double longitude = shelter.getLng();
+            latlng = new LatLng(latitude, longitude);
             googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(latitude, longitude))
+                    .position(latlng)
                     .title(shelter.getName()));
         }
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f));
+
     }
 }
