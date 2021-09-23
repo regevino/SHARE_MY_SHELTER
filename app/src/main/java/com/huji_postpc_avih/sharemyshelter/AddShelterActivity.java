@@ -13,14 +13,12 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.navigation.Navigator;
 
 public class AddShelterActivity extends AppCompatActivity {
-    private FusedLocationProviderClient fusedLocationClient;
     private Location location;
 
     @Override
@@ -68,7 +66,7 @@ public class AddShelterActivity extends AppCompatActivity {
 //            if (location == null) {
 //                location = new Location("idan");
 //                location.setLongitude(35.217018d);
-//                location.setLatitude(31.771959d);
+//                location.setLatitude(31.771959d);ll
 //                Toast.makeText(this, "location is null,\n so uploading FAKE shelter", Toast.LENGTH_SHORT).show();
 //
 //            }
@@ -88,7 +86,8 @@ public class AddShelterActivity extends AppCompatActivity {
                     return;
                 }
 
-                newShelter.setLocation(location);
+                newShelter.setLat(location.getLatitude());
+                newShelter.setLng(location.getLongitude());
                 if (newShelter.getShelterType() == Shelter.ShelterType.PRIVATE) {
                     db.addPrivateShelter(newShelter);
                 }

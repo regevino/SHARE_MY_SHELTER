@@ -76,8 +76,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         SheltersApp app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
         ShelterDB db = app.getDb();
         for (Shelter shelter : db.getAllShelters()) {
-            double latitude = shelter.getLocation().getLatitude();
-            double longitude = shelter.getLocation().getLongitude();
+            double latitude = shelter.getLat();
+            double longitude = shelter.getLng();
             googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(latitude, longitude))
                     .title(shelter.getName()));

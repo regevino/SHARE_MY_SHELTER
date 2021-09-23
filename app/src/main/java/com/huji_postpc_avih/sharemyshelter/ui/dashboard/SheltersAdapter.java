@@ -19,11 +19,16 @@ import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import java.util.ArrayList;
 
 class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
-    private ArrayList<Shelter> userShelters;
+    //    private ArrayList<Shelter> userShelters;
+    private ShelterDB shelterDB;
     private Context context;
 
-    public void setUserShelters(ArrayList<Shelter> userShelters) {
-        this.userShelters = userShelters;
+//    public void setUserShelters(ArrayList<Shelter> userShelters) {
+//        this.userShelters = userShelters;
+//    }
+
+    public void setShelterDB(ShelterDB shelterDB) {
+        this.shelterDB = shelterDB;
     }
 
     public void setContext(Context c) {
@@ -41,7 +46,7 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull ShelterHolder holder, int position) {
-        Shelter shelter = userShelters.get(position);
+        Shelter shelter = shelterDB.getUserShelters().get(position);
         Switch typeSwitch = holder.getTypeSwitch();
         ImageView deleteButton = holder.getDeleteButton();
 
@@ -76,7 +81,7 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
 
     @Override
     public int getItemCount() {
-        return userShelters.size();
+        return shelterDB.getUserShelters().size();
     }
 }
 

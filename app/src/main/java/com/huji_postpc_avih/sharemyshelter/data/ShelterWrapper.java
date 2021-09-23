@@ -4,26 +4,34 @@ import com.google.gson.Gson;
 
 public class ShelterWrapper {
     private boolean isOpen;
-    private String location;
+    private double lat;
+    private double lng;
     private String id;
     private String ownerId;
     private String name;
     private Shelter.ShelterType type;
+    private String geoHashForLocation;
 
     public ShelterWrapper() {}
 
     public ShelterWrapper(Shelter shelter) {
         Gson gson = new Gson();
-        location = gson.toJson(shelter.getLocation());
+        lat = shelter.getLat();
+        lng = shelter.getLng();
         id = gson.toJson(shelter.getId());
         ownerId = shelter.getOwnerId();
         name = shelter.getName();
         type = shelter.getShelterType();
         isOpen = shelter.isOpen();
+        geoHashForLocation = shelter.getGeoHashForLocation();
     }
 
-    public String getLocation() {
-        return location;
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
     }
 
     public String getId() {
@@ -40,6 +48,10 @@ public class ShelterWrapper {
 
     public Shelter.ShelterType getType() {
         return type;
+    }
+
+    public String getGeoHashForLocation() {
+        return geoHashForLocation;
     }
 
     public boolean isOpen() {
