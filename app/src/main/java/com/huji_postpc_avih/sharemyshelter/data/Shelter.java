@@ -3,6 +3,8 @@ package com.huji_postpc_avih.sharemyshelter.data;
 import android.content.Context;
 import android.location.Location;
 
+import com.firebase.geofire.GeoFireUtils;
+import com.firebase.geofire.GeoLocation;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -16,17 +18,13 @@ public class Shelter {
 
     public enum ShelterType {PRIVATE, PUBLIC}
 
-    public Shelter() {
-        location = null;
-        id = null;
-        ownerId = null;
-        name = null;
-        shelterType = ShelterType.PUBLIC;
-        this.isOpen = false;
-    }
+    public Shelter() {}
 
     public Shelter(Context c, Location loc, String name, ShelterType type, String ownerId) {
-        this.location = loc;
+        if (loc != null) {
+            this.lat = loc.getLatitude();
+            this.lng = loc.getLongitude();
+        }
         this.name = name;
         this.shelterType = type;
         this.id = UUID.randomUUID();
@@ -35,6 +33,7 @@ public class Shelter {
         _visualStepsLiveData = new MutableLiveData<>();
         visualStepsLiveData = _visualStepsLiveData;
 
+        geoHashForLocation = GeoFireUtils.getGeoHashForLocation(new GeoLocation(lat, lng));
         // Get user's id from shared preferences:
 //        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
 //        String userId = sp.getString("ownerId", null);
@@ -53,7 +52,9 @@ public class Shelter {
     }
 
     private boolean isOpen;
-    private Location location;
+    private double lat;
+    private double lng;
+    private String geoHashForLocation;
     private String name, ownerId;
     private UUID id;
     private ShelterType shelterType;
@@ -70,8 +71,12 @@ public class Shelter {
         return false;
     }
 
-    public Location getLocation() {
-        return location;
+    public double getLat() {
+        return lat;
+    }
+
+    public double getLng() {
+        return lng;
     }
 
     public String getName() {
@@ -94,12 +99,12 @@ public class Shelter {
         return isOpen;
     }
 
-    public void setOpen(boolean open) {
-        isOpen = open;
+    public String getGeoHashForLocation() {
+        return geoHashForLocation;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
+    public void setOpen(boolean open) {
+        isOpen = open;
     }
 
     public void setName(String name) {
@@ -118,6 +123,18 @@ public class Shelter {
         this.shelterType = shelterType;
     }
 
+    public void setLat(double lat) {
+        this.lat = lat;
+    }
+
+    public void setLng(double lng) {
+        this.lng = lng;
+    }
+
+    public void setGeoHashForLocation(String geoHashForLocation) {
+        this.geoHashForLocation = geoHashForLocation;
+    }
+
     public String toJson(){
         Gson gson = new Gson();
         return gson.toJson(this, Shelter.class);
@@ -128,23 +145,27 @@ public class Shelter {
         return gson.fromJson(jsonRepresentation, Shelter.class);
     }
 
-    public HashMap<String, Object> getData() {
-        HashMap<String, Object> shelterData = new HashMap<>();
-        shelterData.put("location", this.location);
-        shelterData.put("id", this.id);
-        shelterData.put("ownerId", this.ownerId);
-        shelterData.put("name", this.name);
-        shelterData.put("type", this.shelterType);
-        return shelterData;
-    }
+//    public HashMap<String, Object> getData() {
+//        HashMap<String, Object> shelterData = new HashMap<>();
+//        shelterData.put("id", this.id);
+//        shelterData.put("ownerId", this.ownerId);
+//        shelterData.put("name", this.name);
+//        shelterData.put("type", this.shelterType);
+//        shelterData.put("geohash", geoHashForLocation);
+//        shelterData.put("lat", lat);
+//        shelterData.put("lng", lng);
+//        return shelterData;
+//    }
 
     public Shelter(ShelterWrapper wrapper) {
         Gson gson = new Gson();
-        this.location = gson.fromJson(wrapper.getLocation(), Location.class);
+        this.lat = wrapper.getLat();
+        this.lng = wrapper.getLng();
         this.id = gson.fromJson(wrapper.getId(), UUID.class);
         this.ownerId = wrapper.getOwnerId();
         this.name = wrapper.getName();
         this.shelterType = wrapper.getType();
         this.isOpen = wrapper.isOpen();
+        this.geoHashForLocation = wrapper.getGeoHashForLocation();
     }
 }
