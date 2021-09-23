@@ -81,9 +81,23 @@ public class AddShelterActivity extends AppCompatActivity {
             } else {
                 newShelter = new Shelter(this, null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null);
             }
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             Navigator navigator = new Navigator(AddShelterActivity.this);
-            navigator.setLocationAndAddShelter(fusedLocationClient, newShelter);
+            navigator.getCurrentLocation().addOnSuccessListener(location -> {
+                if (location == null) {
+                    Toast.makeText(this, "Failed to add new shelter :(", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                newShelter.setLocation(location);
+                if (newShelter.getShelterType() == Shelter.ShelterType.PRIVATE) {
+                    db.addPrivateShelter(newShelter);
+                }
+                else
+                {
+                    db.addPublicShelter(newShelter);
+                }
+                Toast.makeText(this, "Shelter added successfully!", Toast.LENGTH_LONG).show();
+            });
             finish();
         });
     }

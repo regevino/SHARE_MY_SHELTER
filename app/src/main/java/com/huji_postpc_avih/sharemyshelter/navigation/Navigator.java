@@ -3,15 +3,14 @@ package com.huji_postpc_avih.sharemyshelter.navigation;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.widget.Toast;
+import android.location.Location;
 
 import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.huji_postpc_avih.sharemyshelter.SheltersApp;
+import com.google.android.gms.tasks.Task;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
-import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 
 public class Navigator {
     private Activity activity;
@@ -23,27 +22,13 @@ public class Navigator {
     /**
      * Finds the location of the user.
      * Asks for permission to access the user's location if needed.
+     * @return Task that gets the location.
      */
-    public void setLocationAndAddShelter(FusedLocationProviderClient fusedLocationClient, Shelter shelter) {
+    public Task<Location> getCurrentLocation() {
+        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
         while (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this.activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
-        fusedLocationClient.getLastLocation().addOnSuccessListener(location -> {
-            if (location == null) {
-                Toast.makeText(activity, "Failed to add new shelter :(", Toast.LENGTH_LONG).show();
-                return;
-            }
-            SheltersApp app = (SheltersApp) activity.getApplicationContext();
-            ShelterDB db = app.getDb();
-            shelter.setLocation(location);
-            if (shelter.getShelterType() == Shelter.ShelterType.PRIVATE) {
-                db.addPrivateShelter(shelter);
-            }
-            else
-            {
-                db.addPublicShelter(shelter);
-            }
-            Toast.makeText(activity, "Shelter added successfully!", Toast.LENGTH_LONG).show();
-        });
+        return fusedLocationClient.getLastLocation();
     }
 }
