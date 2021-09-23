@@ -2,27 +2,17 @@ package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
 import android.content.Intent;
-import android.widget.Toast;
-
-import androidx.annotation.Nullable;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.firestore.SetOptions;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
+import com.huji_postpc_avih.sharemyshelter.users.UserManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-
-import com.huji_postpc_avih.sharemyshelter.users.UserManager;
 
 public class ShelterDB {
     public static final String SHELTERS = "shelters";
@@ -108,7 +98,7 @@ public class ShelterDB {
     }
 
 
-    Shelter getShelterById(UUID shelterId) {
+    public Shelter getShelterById(UUID shelterId) {
         for (Shelter shelter : allShelters.getItemsList()) {
             if (shelter.getId().equals(shelterId)) {
                 return shelter;
