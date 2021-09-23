@@ -26,6 +26,7 @@ public class SheltersHolder {
             Shelter shelter = shelters.get(i);
             if (shelterId.equals(shelter.getId())) {
                 shelters.remove(i);
+                break;
             }
         }
     }

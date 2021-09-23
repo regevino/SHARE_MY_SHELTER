@@ -1,17 +1,7 @@
 package com.huji_postpc_avih.sharemyshelter;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
@@ -19,23 +9,15 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.navigation.Navigator;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
 
 public class AddShelterActivity extends AppCompatActivity {
     private FusedLocationProviderClient fusedLocationClient;
@@ -56,8 +38,6 @@ public class AddShelterActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String choice = dropdown.getSelectedItem().toString();
                 if (choice.equals("Current Location")) {
-                    Navigator navigator = new Navigator(AddShelterActivity.this);
-                    location = navigator.getCurrentLocation();
                     if (location != null) {
                         Toast.makeText(AddShelterActivity.this, location.toString(), Toast.LENGTH_LONG).show();
                     }
@@ -92,22 +72,19 @@ public class AddShelterActivity extends AppCompatActivity {
 //                Toast.makeText(this, "location is null,\n so uploading FAKE shelter", Toast.LENGTH_SHORT).show();
 //
 //            }
-            if (location != null) {
-                SheltersApp app = (SheltersApp) getApplicationContext();
-                ShelterDB db = app.getDb();
-                String currentUser = db.getManager().getCurrentUser();
-                if (isPrivate.isChecked()) {
-                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PRIVATE, currentUser);
-                    db.addPrivateShelter(newShelter);
-                } else {
-                    Shelter newShelter = new Shelter(this, location, name.getText().toString(), Shelter.ShelterType.PUBLIC, null);
-                    db.addPublicShelter(newShelter);
-                }
-                finish();
-            }else{
-
-                Toast.makeText(this, "location is null,\n failed adding shelter", Toast.LENGTH_SHORT).show();
+            SheltersApp app = (SheltersApp) getApplicationContext();
+            ShelterDB db = app.getDb();
+            String currentUser = db.getManager().getCurrentUser();
+            Shelter newShelter;
+            if (isPrivate.isChecked()) {
+                newShelter = new Shelter(this, null, name.getText().toString(), Shelter.ShelterType.PRIVATE, currentUser);
+            } else {
+                newShelter = new Shelter(this, null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null);
             }
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+            Navigator navigator = new Navigator(AddShelterActivity.this);
+            navigator.setLocationAndAddShelter(fusedLocationClient, newShelter);
+            finish();
         });
     }
 }

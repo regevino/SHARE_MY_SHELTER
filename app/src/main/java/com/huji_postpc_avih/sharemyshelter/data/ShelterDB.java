@@ -127,6 +127,7 @@ public class ShelterDB {
             @Override
             public void onSuccess(Void unused) {
                 userShelters.deleteShelter(shelterId);
+                app.sendBroadcast(new Intent("Added"));
                 //TODO: notify the adapter to display the changes
             }
         });
