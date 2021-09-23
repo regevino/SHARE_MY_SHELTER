@@ -81,9 +81,8 @@ public class AddShelterActivity extends AppCompatActivity {
             } else {
                 newShelter = new Shelter(this, null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null);
             }
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             Navigator navigator = new Navigator(AddShelterActivity.this);
-            navigator.getCurrentLocation(fusedLocationClient).addOnSuccessListener(location -> {
+            navigator.getCurrentLocation().addOnSuccessListener(location -> {
                 if (location == null) {
                     Toast.makeText(this, "Failed to add new shelter :(", Toast.LENGTH_LONG).show();
                     return;
