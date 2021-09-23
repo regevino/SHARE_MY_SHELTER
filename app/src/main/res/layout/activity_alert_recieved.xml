@@ -17,22 +17,51 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.2"/>
 
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/alert_recieved_waiting_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/alert_recieved_title_text"
+        android:orientation="vertical">
+
     <TextView
-        android:id="@+id/alert_recieved_action_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nearby Shelter was found, click to navigate"
+        android:text="Searching for Nearby Shelters"
+         />
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/alert_recieved_found_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/alert_recieved_title_text" />
-    <Button
-        android:id="@+id/alert_recieved_navigate_button"
-        app:layout_constraintTop_toBottomOf="@id/alert_recieved_action_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Navigate" />
+        app:layout_constraintTop_toBottomOf="@id/alert_recieved_title_text"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nearby Shelters Found"
+            />
+        <Button
+            android:id="@+id/alert_recieved_navigate_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Navigate" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

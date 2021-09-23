@@ -4,15 +4,30 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.location.Location;
-
-import androidx.core.app.ActivityCompat;
+import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.Task;
+import com.google.maps.DirectionsApi;
+import com.google.maps.DirectionsApiRequest;
+import com.google.maps.GeoApiContext;
+import com.google.maps.model.DirectionsLeg;
+import com.google.maps.model.DirectionsResult;
+import com.google.maps.model.DirectionsRoute;
+import com.google.maps.model.LatLng;
+import com.google.maps.model.TravelMode;
+import com.google.maps.model.Unit;
+import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 
+import java.util.Date;
+import java.util.List;
+
+import androidx.core.app.ActivityCompat;
+
 public class Navigator {
+    private static final String TAG = "NAVIGATOR";
     private Activity activity;
 
     public Navigator(Activity activity) {
@@ -22,6 +37,7 @@ public class Navigator {
     /**
      * Finds the location of the user.
      * Asks for permission to access the user's location if needed.
+     *
      * @return Task that gets the location.
      */
     public Task<Location> getCurrentLocation() {
@@ -31,4 +47,45 @@ public class Navigator {
         }
         return fusedLocationClient.getLastLocation();
     }
+
+    public DirectionsResult getDirections(LatLng start, LatLng end) {
+        GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey(activity.getString(R.string.maps_API_key))
+                .build();
+        DirectionsApiRequest req = DirectionsApi.newRequest(context)
+                .destination(end)
+                .origin(start)
+                .alternatives(false)
+                .units(Unit.METRIC)
+                .mode(TravelMode.WALKING)
+                .departureTimeNow();
+        try {
+            return req.await();
+        } catch(Exception ex) {
+            Log.e(TAG, ex.getLocalizedMessage());
+        }
+        return null;
+    }
+
+    public Shelter getNearestShelter(double startLng, double startLat, List<Shelter> shelters, long deadline) {
+
+        for (Shelter sh : shelters) {
+            DirectionsResult directions = getDirections(new LatLng(startLat, startLng), new LatLng(sh.getLat(), sh.getLng()));
+            DirectionsRoute[] routes = directions.routes;
+            if (routes == null) {
+                break;
+            }
+            DirectionsLeg[] legs = routes[0].legs;
+            long totalDurationMs = 0;
+            for (DirectionsLeg leg : legs) {
+                totalDurationMs += 1000 * leg.duration.inSeconds;
+            }
+            if (new Date().getTime() + totalDurationMs < deadline) {
+                return sh;
+            }
+
+        }
+        return null;
+    }
+
 }
