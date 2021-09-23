@@ -68,7 +68,7 @@ public class AddShelterActivity extends AppCompatActivity {
 //            if (location == null) {
 //                location = new Location("idan");
 //                location.setLongitude(35.217018d);
-//                location.setLatitude(31.771959d);
+//                location.setLatitude(31.771959d);ll
 //                Toast.makeText(this, "location is null,\n so uploading FAKE shelter", Toast.LENGTH_SHORT).show();
 //
 //            }

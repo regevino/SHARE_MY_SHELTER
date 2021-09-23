@@ -34,6 +34,7 @@ public class DashboardFragment extends Fragment {
     private FragmentDashboardBinding binding;
     private BroadcastReceiver receiver;
     private UserManagerFirebase userManager;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         dashboardViewModel =
@@ -43,12 +44,9 @@ public class DashboardFragment extends Fragment {
         View root = binding.getRoot();
         SheltersApp app = (SheltersApp) root.getContext().getApplicationContext();
         userManager = app.getUserManager();
-        if(userManager.getCurrentUser() != null)
-        {
+        if (userManager.getCurrentUser() != null) {
             showUserShelters();
-        }
-        else
-        {
+        } else {
             showAuthentication();
         }
         return root;
@@ -82,7 +80,9 @@ public class DashboardFragment extends Fragment {
         // Set RecyclerView of shelters, adapter etc.
         RecyclerView sheltersList = root.findViewById(R.id.privateShelters);
         SheltersAdapter adapter = new SheltersAdapter();
-        adapter.setUserShelters(userShelters);
+//        adapter.setUserShelters(userShelters);
+
+        adapter.setShelterDB(app.getDb());
         adapter.setContext(root.getContext());
         sheltersList.setAdapter(adapter);
         sheltersList.setLayoutManager(new LinearLayoutManager(root.getContext(), RecyclerView.VERTICAL, false));
@@ -120,12 +120,9 @@ public class DashboardFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(userManager.getCurrentUser() != null)
-        {
+        if (userManager.getCurrentUser() != null) {
             showUserShelters();
-        }
-        else
-        {
+        } else {
             showAuthentication();
         }
     }
