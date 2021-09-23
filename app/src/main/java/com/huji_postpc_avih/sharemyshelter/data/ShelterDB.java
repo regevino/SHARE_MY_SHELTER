@@ -31,16 +31,8 @@ public class ShelterDB {
         firebase = app.getFirebaseApp();
         manager = app.getUserManager();
         updateLocalShelterLists();
-//        listenerRegistration = firebase.collection(SHELTERS).addSnapshotListener((value, error) -> {
-//            for (QueryDocumentSnapshot doc : value) {
-//                Shelter shelter = new Shelter(doc.toObject(ShelterWrapper.class));
-//                if (!doc.exists()) {
-//                    //TODO: Erase from local list
-//                    userShelters.deleteShelter(shelter);
-//                    continue;
-//                }
-//            }
-//        });
+        //TODO: maybe we need to add a listener on the db to do stuff when 3rd party user delete
+        // shelter or god erases public shelter directly from the db site.
     }
 
     public void updateLocalShelterLists() {
@@ -112,22 +104,22 @@ public class ShelterDB {
         return null;
     }
 
+    private void deleteShelterRefFromUser(UUID shelterId) {
+        firebase.collection(USERS).document(manager.getCurrentUser()).collection("User's Shelters").document(shelterId.toString()).delete();
+    }
+
+
     public boolean deletePrivateShelter(UUID shelterId) {
         firebase.collection(SHELTERS).document(shelterId.toString()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void unused) {
                 userShelters.deleteShelter(shelterId);
                 app.sendBroadcast(new Intent("Added"));
-                //TODO: notify the adapter to display the changes
+                deleteShelterRefFromUser(shelterId);
             }
         });
         return false;
     }
-//    UUID addUser(UUID userId)
-//    {
-//
-//    }
-
 
     public ArrayList<Shelter> getUserShelters() {
         return userShelters.shelters;
