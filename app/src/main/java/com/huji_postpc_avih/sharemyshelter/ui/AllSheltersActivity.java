@@ -27,8 +27,8 @@ public class AllSheltersActivity extends AppCompatActivity {
         RecyclerView sheltersList = findViewById(R.id.privateShelters);
         AllSheltersAdapter adapter = new AllSheltersAdapter();
         adapter.setShelters(allShelters);
+        adapter.setShelterDB(app.getDb());
         sheltersList.setAdapter(adapter);
         sheltersList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
-
     }
 }
