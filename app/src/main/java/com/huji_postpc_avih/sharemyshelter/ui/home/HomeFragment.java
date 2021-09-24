@@ -1,11 +1,13 @@
 package com.huji_postpc_avih.sharemyshelter.ui.home;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -19,6 +21,7 @@ import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.databinding.FragmentHomeBinding;
+import com.huji_postpc_avih.sharemyshelter.ui.AllSheltersActivity;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -51,6 +54,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         final MapView map = binding.mapView;
         map.onCreate(savedInstanceState);
         mapFragment.getMapAsync(this);
+
+        Button listViewButton = root.findViewById(R.id.listView);
+        listViewButton.setOnClickListener(v -> {
+            startActivity(new Intent(root.getContext(), AllSheltersActivity.class));
+        });
         return root;
     }
 

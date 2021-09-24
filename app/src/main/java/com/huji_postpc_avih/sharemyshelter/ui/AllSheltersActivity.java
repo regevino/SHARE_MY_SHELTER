@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.widget.Button;
 
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
@@ -24,11 +25,14 @@ public class AllSheltersActivity extends AppCompatActivity {
         ArrayList<Shelter> allShelters = app.getDb().getAllShelters();
 
         // Set RecyclerView of shelters, adapter etc.
-        RecyclerView sheltersList = findViewById(R.id.privateShelters);
+        RecyclerView sheltersList = findViewById(R.id.shelters);
         AllSheltersAdapter adapter = new AllSheltersAdapter();
         adapter.setShelters(allShelters);
         adapter.setShelterDB(app.getDb());
         sheltersList.setAdapter(adapter);
         sheltersList.setLayoutManager(new LinearLayoutManager(this, RecyclerView.VERTICAL, false));
+
+        Button mapViewButton = findViewById(R.id.mapView);
+        mapViewButton.setOnClickListener(v -> finish());
     }
 }

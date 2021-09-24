@@ -41,10 +41,11 @@ public class AllSheltersAdapter extends RecyclerView.Adapter<AllSheltersHolder>{
 
     @Override
     public void onBindViewHolder(@NonNull AllSheltersHolder holder, int position) {
-        Shelter shelter = shelterDB.getUserShelters().get(position);TextView name = holder.getName();
+        Shelter shelter = shelterDB.getAllShelters().get(position);
+        TextView name = holder.getName();
         Switch openCloseSwitch = holder.getOpenCloseSwitch();
 
-        holder.getName().setText(shelter.getName());
+        name.setText(shelter.getName());
         openCloseSwitch.setChecked(shelter.isOpen());
         openCloseSwitch.setText(openCloseSwitch.isChecked() ? "Open" : "Closed");
         openCloseSwitch.setOnClickListener(view -> {
