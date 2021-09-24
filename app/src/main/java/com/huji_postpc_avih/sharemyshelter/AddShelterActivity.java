@@ -2,23 +2,34 @@ package com.huji_postpc_avih.sharemyshelter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationServices;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.navigation.Navigator;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class AddShelterActivity extends AppCompatActivity {
+    public static final int REQUEST_CODE = 1;
     private Location location;
 
     @Override
@@ -60,6 +71,19 @@ public class AddShelterActivity extends AppCompatActivity {
             }
         });
 
+        ImageView addPhotoButton = findViewById(R.id.add_photo);
+
+        addPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE);
+            }
+        });
+
+
         ImageButton addShelterButton = findViewById(R.id.addShelter);
         addShelterButton.setOnClickListener(v -> {
 //            //TODO: only for testing.
@@ -90,14 +114,52 @@ public class AddShelterActivity extends AppCompatActivity {
                 newShelter.setLng(location.getLongitude());
                 if (newShelter.getShelterType() == Shelter.ShelterType.PRIVATE) {
                     db.addPrivateShelter(newShelter);
-                }
-                else
-                {
+                } else {
                     db.addPublicShelter(newShelter);
                 }
                 Toast.makeText(this, "Shelter added successfully!", Toast.LENGTH_LONG).show();
             });
             finish();
         });
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            switch (requestCode) {
+
+                case REQUEST_CODE:
+                    Bitmap bitmap = getImageFromDataIntent(resultCode, data);
+                    //refer the image to a shelter in the db.
+                    break;
+            }
+        } catch (Exception e) {
+            Log.e("test", "Exception in onActivityResult : " + e.getMessage());
+        }
+    }
+
+    private Bitmap getImageFromDataIntent(int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+            //data gives you the image uri. Try to convert that to bitmap
+            Uri selectedImageUri = data.getData();
+            String fileString = selectedImageUri.getPath();
+
+            Pattern lastLongPattern = Pattern.compile("([0-9]+)$");
+            Matcher matcher = lastLongPattern.matcher(fileString);
+            boolean b = matcher.find();
+            String someNumberStr = matcher.group(1);
+            long lastNumberLong = Long.parseLong(someNumberStr);
+
+
+//                        Bitmap image = BitmapFactory.decodeFile(fileString);
+            Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                    getContentResolver(), lastNumberLong,
+                    MediaStore.Images.Thumbnails.FULL_SCREEN_KIND,
+                    (BitmapFactory.Options) null);
+            return bitmap;
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Log.e("test", "Selecting picture cancelled");
+        }
+        return null;
     }
 }
