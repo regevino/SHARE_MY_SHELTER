@@ -1,15 +1,18 @@
 package com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
 import com.huji_postpc_avih.sharemyshelter.R;
+import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
+
+import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 public class AddShelterActivity extends AppCompatActivity {
 
@@ -24,7 +27,7 @@ public class AddShelterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_shelter);
-
+        setTitle("Add New Shelter...");
         this.fragmentManager = getSupportFragmentManager();
 
         nextButton = findViewById(R.id.add_shelter_next);
@@ -78,7 +81,9 @@ public class AddShelterActivity extends AppCompatActivity {
     }
 
     private void onClickDone(View b) {
-//        detailsFragment.onCLickDone();
-        //todo end
+        List<ShelterVisualGuide> visualGuidelines = visualGuidesFragment.getVisualGuidelines();
+        detailsFragment.AddShelter(visualGuidelines);
+
+        finish();
     }
 }
