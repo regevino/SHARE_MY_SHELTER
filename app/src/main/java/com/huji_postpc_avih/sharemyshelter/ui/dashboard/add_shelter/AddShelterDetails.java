@@ -35,6 +35,7 @@ import java.util.List;
  */
 public class AddShelterDetails extends Fragment {
     private Location location;
+    private View root;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -78,7 +79,8 @@ public class AddShelterDetails extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Spinner dropdown = getActivity().findViewById(R.id.locationSpinner);
+        root = inflater.inflate(R.layout.fragment_add_shelter_details, container, false);
+        Spinner dropdown = root.findViewById(R.id.locationSpinner);
         String[] items = new String[]{"Current Location", "Choose from Map"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
@@ -102,7 +104,7 @@ public class AddShelterDetails extends Fragment {
             }
         });
 
-        Switch isPrivate = getActivity().findViewById(R.id.shelterMode);
+        Switch isPrivate = root.findViewById(R.id.shelterMode);
         isPrivate.setOnClickListener(v -> {
             if (isPrivate.getText().toString().equals("Public")) {
                 isPrivate.setText(R.string.Private);
@@ -125,7 +127,7 @@ public class AddShelterDetails extends Fragment {
 //            }
 //        });
 
-        return inflater.inflate(R.layout.fragment_add_shelter_details, container, false);
+        return root;
     }
 
     public void AddShelter(List<ShelterVisualGuide> visualGuides) {
@@ -134,7 +136,7 @@ public class AddShelterDetails extends Fragment {
         String currentUser = db.getManager().getCurrentUser();
         Shelter newShelter;
         EditText name = getActivity().findViewById(R.id.name);
-        Switch isPrivate = getActivity().findViewById(R.id.shelterMode);
+        Switch isPrivate = root.findViewById(R.id.shelterMode);
 
         if (isPrivate.isChecked()) {
             newShelter = new Shelter(getActivity(), null, name.getText().toString(), Shelter.ShelterType.PRIVATE, currentUser);

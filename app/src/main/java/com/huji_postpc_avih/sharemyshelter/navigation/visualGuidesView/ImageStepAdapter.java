@@ -44,7 +44,7 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
     public ImageStepHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View contextView = inflater.inflate(R.layout.row_visual_step_navifgation, parent, false);
+        View contextView = inflater.inflate(R.layout.row_visual_step_navigation, parent, false);
         return new ImageStepHolder(contextView);
     }
 
