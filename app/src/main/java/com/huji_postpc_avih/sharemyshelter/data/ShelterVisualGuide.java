@@ -1,18 +1,18 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
-import android.media.Image;
+import android.graphics.Bitmap;
 
 public class ShelterVisualGuide {
 
     private String description;
-    private Image image;
+    private Bitmap image;
     private int stepNumber;
 
     public String getDescription() {
         return description;
     }
 
-    public Image getImage() {
+    public Bitmap getImage() {
         return image;
     }
 
