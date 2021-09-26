@@ -31,6 +31,8 @@ import androidx.annotation.NonNull;
 public class ShelterDB {
     public static final String SHELTERS = "shelters";
     public static final String USERS = "users";
+    public static final String VISUAL_GUIDELINES = "visual guidelines";
+    public static final String VISUAL_GUIDELINES_OBJECTS = "visual guidelines objects";
     private SheltersHolder allShelters;
     private SheltersHolder userShelters;
     private UserManager manager;
@@ -84,10 +86,19 @@ public class ShelterDB {
                         .addOnSuccessListener(unused -> {
                             //when we upload new private shelter we need to update the *local* DB.
                             updateLocalShelterLists();
+                            addVisualGuides(shelterToAdd);
                         })
                         .addOnFailureListener(e -> {/*TODO*/}))
                 .addOnFailureListener(command -> {/*TODO*/});
 
+    }
+
+    private void addVisualGuides(Shelter shelter) {
+        for (ShelterVisualGuide shelterVisualGuide : shelter.visualStepsLiveData.getValue()) {
+
+            firebase.collection(VISUAL_GUIDELINES).document(shelter.getId().toString()).
+                    collection(VISUAL_GUIDELINES_OBJECTS).document(Integer.toString(shelterVisualGuide.getStepNumber())).set(shelterVisualGuide);
+        }
     }
 
     public void addPublicShelter(Shelter shelterToAdd) {
@@ -135,7 +146,7 @@ public class ShelterDB {
         return false;
     }
 
-    public Task<List<Shelter>> getNearbyShelters(double longitude, double latitude, int radius){
+    public Task<List<Shelter>> getNearbyShelters(double longitude, double latitude, int radius) {
 
         final GeoLocation center = new GeoLocation(latitude, longitude);
         List<GeoQueryBounds> bounds = GeoFireUtils.getGeoHashQueryBounds(center, radius);

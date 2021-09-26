@@ -12,6 +12,7 @@ import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
@@ -24,16 +25,14 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
     private Shelter sh;
     private Context context;
 
-    public ImageStepAdapter(Shelter shelter, LifecycleOwner owner, Context c)
-    {
+    public ImageStepAdapter(Shelter shelter, LifecycleOwner owner, Context c) {
         context = c;
         sh = shelter;
-        if (sh.visualStepsLiveData == null || sh.visualStepsLiveData.getValue() == null)
-        {
+        if (sh.visualStepsLiveData == null || sh.visualStepsLiveData.getValue() == null) {
             sh.retrieveVisuals();
-            sh.visualStepsLiveData.observe(owner, new Observer<LinkedList<ShelterVisualGuide>>() {
+            sh.visualStepsLiveData.observe(owner, new Observer<List<ShelterVisualGuide>>() {
                 @Override
-                public void onChanged(LinkedList<ShelterVisualGuide> shelterVisualGuides) {
+                public void onChanged(List<ShelterVisualGuide> shelterVisualGuides) {
                     notifyDataSetChanged();
                 }
             });
@@ -46,15 +45,14 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
     public ImageStepHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View contextView = inflater.inflate(R.layout.row_visual_step, parent, false);
+        View contextView = inflater.inflate(R.layout.row_visual_step_navifgation, parent, false);
         return new ImageStepHolder(contextView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull @NotNull ImageStepHolder holder, int position) {
 
-        if (sh.visualStepsLiveData.getValue() == null)
-        {
+        if (sh.visualStepsLiveData.getValue() == null) {
             holder.setImage(context, null); //TODO default image
             return;
         }
@@ -63,8 +61,7 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
 
     @Override
     public int getItemCount() {
-        if (sh.visualStepsLiveData.getValue() == null)
-        {
+        if (sh.visualStepsLiveData.getValue() == null) {
             return 1;
         }
         return sh.visualStepsLiveData.getValue().size();
