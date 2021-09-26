@@ -51,8 +51,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             fm.executePendingTransactions();
         }
 
-        final MapView map = binding.mapView;
-        map.onCreate(savedInstanceState);
         mapFragment.getMapAsync(this);
 
         Button listViewButton = root.findViewById(R.id.listView);
