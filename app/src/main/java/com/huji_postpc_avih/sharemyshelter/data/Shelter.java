@@ -8,6 +8,7 @@ import com.firebase.geofire.GeoLocation;
 import com.google.gson.Gson;
 
 import java.util.LinkedList;
+import java.util.List;
 import java.util.UUID;
 
 import androidx.lifecycle.LiveData;
@@ -17,7 +18,8 @@ public class Shelter {
 
     public enum ShelterType {PRIVATE, PUBLIC}
 
-    public Shelter() {}
+    public Shelter() {
+    }
 
     public Shelter(Context c, Location loc, String name, ShelterType type, String ownerId) {
         if (loc != null) {
@@ -57,14 +59,18 @@ public class Shelter {
     private String name, ownerId;
     private UUID id;
     private ShelterType shelterType;
-    private LinkedList<ShelterVisualGuide> visualSteps;
-    private MutableLiveData<LinkedList<ShelterVisualGuide>> _visualStepsLiveData;
 
-    public LiveData<LinkedList<ShelterVisualGuide>> visualStepsLiveData;
+    //    private LinkedList<ShelterVisualGuide> visualSteps;
+
+    private MutableLiveData<List<ShelterVisualGuide>> _visualStepsLiveData;
+    public LiveData<List<ShelterVisualGuide>> visualStepsLiveData;
+
+    public void set_visualStepsLiveData(List<ShelterVisualGuide> visualSteps) {
+        this._visualStepsLiveData.setValue(visualSteps);
+    }
 
     public void retrieveVisuals() {
-        if (_visualStepsLiveData == null)
-        {
+        if (_visualStepsLiveData == null) {
             _visualStepsLiveData = new MutableLiveData<>();
             visualStepsLiveData = _visualStepsLiveData;
         }
@@ -141,7 +147,7 @@ public class Shelter {
         this.geoHashForLocation = geoHashForLocation;
     }
 
-    public String toJson(){
+    public String toJson() {
         Gson gson = new Gson();
         return gson.toJson(this, Shelter.class);
     }
