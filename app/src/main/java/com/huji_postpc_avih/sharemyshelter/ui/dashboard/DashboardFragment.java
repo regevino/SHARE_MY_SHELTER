@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.huji_postpc_avih.sharemyshelter.AddShelterActivity;
+import com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter.AddShelterActivity;
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;

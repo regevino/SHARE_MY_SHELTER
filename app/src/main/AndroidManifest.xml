@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.huji_postpc_avih.sharemyshelter">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -32,7 +33,7 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".AddShelterActivity"
+            android:name=".ui.dashboard.add_shelter.AddShelterActivity"
             android:label="@string/app_name" />
         <activity
             android:name=".MainActivity"
@@ -51,6 +52,18 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.com.vansuita.pickimage.provider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/picker_provider_paths" />
+        </provider>
     </application>
 
 </manifest>
