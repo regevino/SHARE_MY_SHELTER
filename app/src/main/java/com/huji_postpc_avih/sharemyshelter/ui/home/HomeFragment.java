@@ -7,7 +7,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,16 +49,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         if (mapFragment == null) {
             mapFragment = new SupportMapFragment();
             FragmentTransaction ft = fm.beginTransaction();
-            ft.add(R.id.map, mapFragment, "mapFragment");
+            ft.add(R.id.fragmentContainer, mapFragment, "mapFragment");
             ft.commit();
             fm.executePendingTransactions();
         }
 
         mapFragment.getMapAsync(this);
 
-        Button listViewButton = root.findViewById(R.id.listView);
-        listViewButton.setOnClickListener(v -> {
-            startActivity(new Intent(root.getContext(), AllSheltersActivity.class));
+        Spinner modeSpinner = root.findViewById(R.id.modeSpinner);
+        String[] items = new String[]{"Map", "List"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, items);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        modeSpinner.setAdapter(adapter);
+        SupportMapFragment finalMapFragment = mapFragment;
+        modeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String choice = modeSpinner.getSelectedItem().toString();
+                FragmentTransaction ft = fm.beginTransaction();
+                if (choice.equals("List")) {
+                    AllSheltersFragment allSheltersFragment = new AllSheltersFragment();
+                    ft.replace(R.id.fragmentContainer, allSheltersFragment);
+                    //                    fm.executePendingTransactions();
+                }
+                else
+                {
+                    ft.replace(R.id.fragmentContainer, finalMapFragment, "mapFragment");
+                    finalMapFragment.getMapAsync(HomeFragment.this);
+                    //                    fm.executePendingTransactions();
+                }
+                ft.commit();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {}
         });
         return root;
     }
