@@ -11,7 +11,6 @@ import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -57,6 +56,7 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
             return;
         }
         holder.setImage(context, sh.visualStepsLiveData.getValue().get(position).getImage());
+        holder.setDescription(context, sh.visualStepsLiveData.getValue().get(position).getDescription());
     }
 
     @Override
