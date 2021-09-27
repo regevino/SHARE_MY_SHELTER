@@ -21,6 +21,9 @@
             android:name=".alerts.AlertRecievedActivity"
             android:launchMode="singleInstance"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" />
+        <activity
+            android:name=".ui.AllSheltersActivity"
+            android:exported="true" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
