@@ -24,7 +24,6 @@ import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.databinding.FragmentHomeBinding;
-import com.huji_postpc_avih.sharemyshelter.ui.AllSheltersActivity;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -70,13 +69,11 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 if (choice.equals("List")) {
                     AllSheltersFragment allSheltersFragment = new AllSheltersFragment();
                     ft.replace(R.id.fragmentContainer, allSheltersFragment);
-                    //                    fm.executePendingTransactions();
                 }
                 else
                 {
                     ft.replace(R.id.fragmentContainer, finalMapFragment, "mapFragment");
                     finalMapFragment.getMapAsync(HomeFragment.this);
-                    //                    fm.executePendingTransactions();
                 }
                 ft.commit();
             }
