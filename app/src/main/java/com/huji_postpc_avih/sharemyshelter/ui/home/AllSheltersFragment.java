@@ -78,7 +78,7 @@ public class AllSheltersFragment extends Fragment {
 
         // Set RecyclerView of shelters, adapter etc.
         RecyclerView sheltersList = root.findViewById(R.id.shelters);
-        AllSheltersAdapter adapter = new AllSheltersAdapter();
+        AllSheltersAdapter adapter = new AllSheltersAdapter(getActivity());
         adapter.setShelters(allShelters);
         adapter.setShelterDB(app.getDb());
         sheltersList.setAdapter(adapter);
