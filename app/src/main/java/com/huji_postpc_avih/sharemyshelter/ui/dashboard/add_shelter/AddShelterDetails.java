@@ -11,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -23,8 +21,6 @@ import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
 import com.huji_postpc_avih.sharemyshelter.navigation.Navigator;
-import com.vansuita.pickimage.bundle.PickSetup;
-import com.vansuita.pickimage.dialog.PickImageDialog;
 
 import java.util.List;
 
@@ -113,7 +109,6 @@ public class AddShelterDetails extends Fragment {
             }
         });
 
-        ImageView addPhotoButton = container.findViewById(R.id.add_photo);
 
 //        addPhotoButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -135,7 +130,7 @@ public class AddShelterDetails extends Fragment {
         ShelterDB db = app.getDb();
         String currentUser = db.getManager().getCurrentUser();
         Shelter newShelter;
-        EditText name = getActivity().findViewById(R.id.name);
+        EditText name = getActivity().findViewById(R.id.step_number);
         Switch isPrivate = root.findViewById(R.id.shelterMode);
 
         if (isPrivate.isChecked()) {

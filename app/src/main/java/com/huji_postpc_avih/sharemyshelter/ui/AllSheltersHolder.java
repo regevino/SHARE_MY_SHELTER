@@ -15,7 +15,7 @@ public class AllSheltersHolder extends RecyclerView.ViewHolder{
 
     public AllSheltersHolder(@NonNull View itemView) {
         super(itemView);
-        name = itemView.findViewById(R.id.name);
+        name = itemView.findViewById(R.id.step_number);
         openCloseSwitch = itemView.findViewById(R.id.openClose);
     }
 

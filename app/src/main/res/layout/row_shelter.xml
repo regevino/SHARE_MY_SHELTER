@@ -27,7 +27,7 @@
         app:srcCompat="@android:drawable/ic_menu_delete" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/step_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="shelter name"

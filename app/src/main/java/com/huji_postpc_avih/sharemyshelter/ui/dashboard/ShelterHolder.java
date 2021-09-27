@@ -1,7 +1,6 @@
 package com.huji_postpc_avih.sharemyshelter.ui.dashboard;
 
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -20,7 +19,7 @@ public class ShelterHolder extends RecyclerView.ViewHolder {
     public ShelterHolder(@NonNull View itemView) {
         super(itemView);
         typeSwitch = itemView.findViewById(R.id.typeSwitch);
-        name = itemView.findViewById(R.id.name);
+        name = itemView.findViewById(R.id.step_number);
         deleteButton = itemView.findViewById(R.id.deleteShelterImage);
     }
 

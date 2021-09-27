@@ -8,17 +8,18 @@
 
 
     <ImageView
-        android:id="@+id/add_photo"
+        android:id="@+id/add_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         app:layout_constraintStart_toEndOf="@id/add_image_text_view"
         app:layout_constraintTop_toTopOf="parent"
 
+
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
     <TextView
-        android:id="@+id/name"
+        android:id="@+id/step_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -44,12 +45,37 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="Insert image description"
         android:inputType="textLongMessage"
-        android:text="Insert image description"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/add_image_text_view"
-        />
+        app:layout_constraintTop_toBottomOf="@id/add_image_text_view" />
 
+    <ImageButton
+        android:id="@+id/add_visual_guide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/description_edit_text"
+        app:srcCompat="@android:drawable/ic_menu_add" />
+
+    <View
+        android:layout_width="174dp"
+        android:layout_height="3dp"
+        android:layout_marginBottom="20dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/add_visual_guide"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <View
+        android:layout_width="174dp"
+        android:layout_height="3dp"
+        android:layout_marginBottom="20dp"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/add_visual_guide" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

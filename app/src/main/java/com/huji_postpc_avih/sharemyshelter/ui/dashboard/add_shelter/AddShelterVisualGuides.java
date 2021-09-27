@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +15,13 @@ import android.widget.Toast;
 
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
+import com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter.add_shelter_visual_guides.VisualGuidesAdapter;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +30,8 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class AddShelterVisualGuides extends Fragment implements IPickResult {
+    private View root;
+    private ArrayList<ShelterVisualGuide> visualGuideList;
 
 
     public AddShelterVisualGuides() {
@@ -49,39 +55,46 @@ public class AddShelterVisualGuides extends Fragment implements IPickResult {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if (getArguments() != null) {
-//        }
+        if (getArguments() != null) {
+        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ImageView addPhotoButton = getActivity().findViewById(R.id.add_photo);
-
-        addPhotoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                Intent intent = new Intent();
-//                intent.setType("image/*");
-//                intent.setAction(Intent.ACTION_GET_CONTENT);
-//                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE);
-                PickImageDialog.build(new PickSetup()).show(getParentFragmentManager());
-
-            }
-        });
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_shelter_visual_guides, container, false);
+        root = inflater.inflate(R.layout.fragment_add_shelter_visual_guides, container, false);
+
+        visualGuideList = new ArrayList<>();
+        ShelterVisualGuide example = new ShelterVisualGuide();
+        example.setDescription("Example Description");
+        Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
+        Bitmap bmp = Bitmap.createBitmap(200, 300, conf);
+        example.setImage(bmp);
+        example.setStepNumber(1);
+        visualGuideList.add(example);
+
+        RecyclerView recyclerView = root.findViewById(R.id.AddVisualGuidesRecycler);
+        VisualGuidesAdapter adapter = new VisualGuidesAdapter();
+        adapter.setList(visualGuideList);
+        adapter.setParentFragmentManager(getParentFragmentManager());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext(), RecyclerView.VERTICAL, false));
+
+
+        return root;
     }
 
+
     public List<ShelterVisualGuide> getVisualGuidelines() {
-        return null;
+        return visualGuideList;
     }
 
     @Override
     public void onPickResult(PickResult r) {
         if (r.getError() == null) {
-            Toast.makeText(getActivity(), "choose photo", Toast.LENGTH_SHORT).show();
+            Toast.makeText(root.getContext(), "choose photo", Toast.LENGTH_SHORT).show();
             //If you want the Uri.
             //Mandatory to refresh image from Uri.
             //getImageView().setImageURI(null);
