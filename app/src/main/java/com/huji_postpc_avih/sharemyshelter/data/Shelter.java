@@ -1,13 +1,11 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
-import android.content.Context;
 import android.location.Location;
 
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.google.gson.Gson;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,7 +19,7 @@ public class Shelter {
     public Shelter() {
     }
 
-    public Shelter(Context c, Location loc, String name, ShelterType type, String ownerId) {
+    public Shelter(Location loc, String name, ShelterType type, String ownerId) {
         if (loc != null) {
             this.lat = loc.getLatitude();
             this.lng = loc.getLongitude();
@@ -35,21 +33,7 @@ public class Shelter {
         visualStepsLiveData = _visualStepsLiveData;
 
         geoHashForLocation = GeoFireUtils.getGeoHashForLocation(new GeoLocation(lat, lng));
-        // Get user's id from shared preferences:
-//        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-//        String userId = sp.getString("ownerId", null);
-//        Gson gson = new Gson();
-//        if (userId != null) {
-//            this.ownerId = gson.fromJson(userId, UUID.class);
-//        }
-//        else
-//        {
-//            this.ownerId = UUID.randomUUID();
-//            String ownerIdToJson = gson.toJson(this.ownerId, UUID.class);
-//            SharedPreferences.Editor editor = sp.edit();
-//            editor.putString("ownerId", ownerIdToJson);
-//            editor.apply();
-//        }
+
     }
 
     private boolean isOpen;

@@ -2,11 +2,13 @@ package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryBounds;
 import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -23,6 +25,7 @@ import com.huji_postpc_avih.sharemyshelter.users.UserManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,8 +34,8 @@ import androidx.annotation.NonNull;
 public class ShelterDB {
     public static final String SHELTERS = "shelters";
     public static final String USERS = "users";
-    public static final String VISUAL_GUIDELINES = "visual guidelines";
     public static final String VISUAL_GUIDELINES_OBJECTS = "visual guidelines objects";
+    public static final String VISUAL_GUIDELINES = "visual guidelines";
     private SheltersHolder allShelters;
     private SheltersHolder userShelters;
     private UserManager manager;
@@ -99,11 +102,26 @@ public class ShelterDB {
             firebase.collection(VISUAL_GUIDELINES).document(shelter.getId().toString()).
                     collection(VISUAL_GUIDELINES_OBJECTS).document(Integer.toString(shelterVisualGuide.getStepNumber())).set(shelterVisualGuide);
         }
+//
+//        firebase.collection(VISUAL_GUIDELINES).document(shelter.getId().toString()).set().addOnSuccessListener(new OnSuccessListener<Void>() {
+//            @Override
+//            public void onSuccess(Void unused) {
+//                Log.i("test", "onSuccess");
+//            }
+//        }).addOnFailureListener(new OnFailureListener() {
+//            @Override
+//            public void onFailure(@NonNull Exception e) {
+//                Log.i("test", "fail");
+//
+//            }
+//        });
+//                collection(VISUAL_GUIDELINES_OBJECTS).document(Integer.toString(shelter.visualStepsLiveData.getValue().get(0).getStepNumber())).set(shelter.visualStepsLiveData.getValue().get(0));
     }
 
     public void addPublicShelter(Shelter shelterToAdd) {
         firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
                 .set(new ShelterWrapper(shelterToAdd));
+        addVisualGuides(shelterToAdd);
     }
 
     public void updateShelter(Shelter shelter) {

@@ -2,10 +2,14 @@ package com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter.add_shelter
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -43,7 +47,35 @@ public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder
         holder.addImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PickImageDialog.build(new PickSetup()).show(parentFragmentManager);
+                PickImageDialog.build(new PickSetup()).show(parentFragmentManager).setOnPickResult(new IPickResult() {
+                    @Override
+                    public void onPickResult(PickResult r) {
+                        if (r.getError() == null) {
+                            Log.i("test", "photo success");
+                            //If you want the Uri.
+                            //Mandatory to refresh image from Uri.
+                            //getImageView().setImageURI(null);
+
+                            //Setting the real returned image.
+                            //getImageView().setImageURI(r.getUri());
+
+                            //If you want the Bitmap.
+//            getImageView().setImageBitmap(r.getBitmap());
+                            Bitmap image = r.getBitmap();
+                            visualGuide.setImage(image);
+
+
+                            //Image path
+                            //r.getPath();
+                        } else {
+                            //Handle possible errors
+                            //TODO: do what you have to do with r.getError();
+//                            Toast.makeText(getActivity(), r.getError().getMessage(), Toast.LENGTH_LONG).show();
+                            Log.i("test", "photo failed\n" + r.getError());
+
+                        }
+                    }
+                });
 
             }
         });
@@ -51,12 +83,29 @@ public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder
         holder.addVisualGuide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                holder.addVisualGuide.setVisibility(View.GONE);
                 addEmptyVisualGuide();
             }
         });
 
         holder.stepNumber.setText("step: ".concat(Integer.toString(visualGuide.getStepNumber())));
 
+        holder.imageDescription.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                visualGuide.setDescription(holder.imageDescription.getText().toString());
+            }
+        });
 
     }
 

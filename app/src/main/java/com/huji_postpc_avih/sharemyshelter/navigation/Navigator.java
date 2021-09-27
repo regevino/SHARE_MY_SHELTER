@@ -2,6 +2,7 @@ package com.huji_postpc_avih.sharemyshelter.navigation;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.util.Log;
@@ -28,10 +29,15 @@ import androidx.core.app.ActivityCompat;
 
 public class Navigator {
     private static final String TAG = "NAVIGATOR";
-    private Activity activity;
+        private Activity activity;
+    private Context context;
 
     public Navigator(Activity activity) {
         this.activity = activity;
+    }
+
+    public Navigator(Context c) {
+        this.context = c;
     }
 
     /**
@@ -47,6 +53,13 @@ public class Navigator {
         }
         return fusedLocationClient.getLastLocation();
     }
+//    public Task<Location> getCurrentLocation() {
+//        FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
+//        while (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+//        }
+//        return fusedLocationClient.getLastLocation();
+//    }
 
     public DirectionsResult getDirections(LatLng start, LatLng end) {
         GeoApiContext context = new GeoApiContext.Builder()
@@ -61,7 +74,7 @@ public class Navigator {
                 .departureTimeNow();
         try {
             return req.await();
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, ex.getLocalizedMessage());
         }
         return null;

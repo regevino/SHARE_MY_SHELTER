@@ -5,6 +5,9 @@ import android.graphics.Bitmap;
 public class ShelterVisualGuide {
 
     private String description;
+    private Bitmap image;
+    private int stepNumber;
+
 
     public void setDescription(String description) {
         this.description = description;
@@ -17,9 +20,6 @@ public class ShelterVisualGuide {
     public void setStepNumber(int stepNumber) {
         this.stepNumber = stepNumber;
     }
-
-    private Bitmap image;
-    private int stepNumber;
 
     public String getDescription() {
         return description;

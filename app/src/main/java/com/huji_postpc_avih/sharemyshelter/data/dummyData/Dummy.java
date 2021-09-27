@@ -9,7 +9,7 @@ public class Dummy {
 
     public static Shelter getDummyShelter(Context c)
     {
-        return new Shelter(c, new Location(""), "Dummy shelter", Shelter.ShelterType.PUBLIC, null);
+        return new Shelter(new Location(""), "Dummy shelter", Shelter.ShelterType.PUBLIC, null);
     }
 
 }

@@ -1,5 +1,6 @@
 package com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter;
 
+import android.app.Activity;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -109,39 +110,26 @@ public class AddShelterDetails extends Fragment {
             }
         });
 
-
-//        addPhotoButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-////                Intent intent = new Intent();
-////                intent.setType("image/*");
-////                intent.setAction(Intent.ACTION_GET_CONTENT);
-////                startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE);
-//                PickImageDialog.build(new PickSetup()).show(getParentFragmentManager());
-//
-//            }
-//        });
-
         return root;
     }
 
     public void AddShelter(List<ShelterVisualGuide> visualGuides) {
-        SheltersApp app = (SheltersApp) getActivity().getApplicationContext();
+        SheltersApp app = (SheltersApp) root.getContext().getApplicationContext();
         ShelterDB db = app.getDb();
         String currentUser = db.getManager().getCurrentUser();
         Shelter newShelter;
-        EditText name = getActivity().findViewById(R.id.step_number);
+        EditText name = root.findViewById(R.id.step_number);
         Switch isPrivate = root.findViewById(R.id.shelterMode);
 
         if (isPrivate.isChecked()) {
-            newShelter = new Shelter(getActivity(), null, name.getText().toString(), Shelter.ShelterType.PRIVATE, currentUser);
+            newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PRIVATE, currentUser);
         } else {
-            newShelter = new Shelter(getActivity(), null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null);
+            newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null);
         }
-        Navigator navigator = new Navigator(AddShelterDetails.this.getActivity());
+        Navigator navigator = new Navigator((Activity) root.getContext());
         navigator.getCurrentLocation().addOnSuccessListener(location -> {
             if (location == null) {
-                Toast.makeText(AddShelterDetails.this.getActivity(), "Failed to add new shelter :(", Toast.LENGTH_LONG).show();
+                Toast.makeText(root.getContext(), "Failed to add new shelter :(", Toast.LENGTH_LONG).show();
                 return;
             }
 
@@ -154,7 +142,7 @@ public class AddShelterDetails extends Fragment {
                 db.addPublicShelter(newShelter);
             }
 
-            Toast.makeText(AddShelterDetails.this.getActivity(), "Shelter added successfully!", Toast.LENGTH_LONG).show();
+            Toast.makeText(root.getContext(), "Shelter added successfully!", Toast.LENGTH_LONG).show();
         });
 
     }

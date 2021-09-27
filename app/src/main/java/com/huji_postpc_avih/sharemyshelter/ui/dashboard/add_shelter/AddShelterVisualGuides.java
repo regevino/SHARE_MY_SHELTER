@@ -29,7 +29,7 @@ import java.util.List;
  * Use the {@link AddShelterVisualGuides#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddShelterVisualGuides extends Fragment implements IPickResult {
+public class AddShelterVisualGuides extends Fragment {
     private View root;
     private ArrayList<ShelterVisualGuide> visualGuideList;
 
@@ -82,7 +82,6 @@ public class AddShelterVisualGuides extends Fragment implements IPickResult {
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(root.getContext(), RecyclerView.VERTICAL, false));
 
-
         return root;
     }
 
@@ -91,28 +90,4 @@ public class AddShelterVisualGuides extends Fragment implements IPickResult {
         return visualGuideList;
     }
 
-    @Override
-    public void onPickResult(PickResult r) {
-        if (r.getError() == null) {
-            Toast.makeText(root.getContext(), "choose photo", Toast.LENGTH_SHORT).show();
-            //If you want the Uri.
-            //Mandatory to refresh image from Uri.
-            //getImageView().setImageURI(null);
-
-            //Setting the real returned image.
-            //getImageView().setImageURI(r.getUri());
-
-            //If you want the Bitmap.
-//            getImageView().setImageBitmap(r.getBitmap());
-            Bitmap image = r.getBitmap();
-
-
-            //Image path
-            //r.getPath();
-        } else {
-            //Handle possible errors
-            //TODO: do what you have to do with r.getError();
-            Toast.makeText(getActivity(), r.getError().getMessage(), Toast.LENGTH_LONG).show();
-        }
-    }
 }
