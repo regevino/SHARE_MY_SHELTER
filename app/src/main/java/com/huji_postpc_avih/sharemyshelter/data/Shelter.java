@@ -1,12 +1,16 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
+import android.content.Context;
 import android.location.Location;
+import android.util.Log;
 
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -14,6 +18,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 public class Shelter {
+
+    private static final String TAG = "SHELTER";
 
     public enum ShelterType {PRIVATE, PUBLIC}
 
@@ -34,7 +40,6 @@ public class Shelter {
         visualStepsLiveData = _visualStepsLiveData;
 
         geoHashForLocation = GeoFireUtils.getGeoHashForLocation(new GeoLocation(lat, lng));
-        visualGuidelinesUuids = new ArrayList<>();
 
     }
 
@@ -45,7 +50,6 @@ public class Shelter {
     private String name, ownerId;
     private UUID id;
     private ShelterType shelterType;
-    public ArrayList<UUID> visualGuidelinesUuids;
 
     //    private LinkedList<ShelterVisualGuide> visualSteps;
 
@@ -56,11 +60,24 @@ public class Shelter {
         this._visualStepsLiveData.setValue(visualSteps);
     }
 
-    public void retrieveVisuals() {
+    public void retrieveVisuals(Context c) {
         if (_visualStepsLiveData == null) {
             _visualStepsLiveData = new MutableLiveData<>();
             visualStepsLiveData = _visualStepsLiveData;
         }
+        LinkedList<ShelterVisualGuide> guides = new LinkedList<>();
+        FirebaseFirestore.getInstance().collection(ShelterDB.VISUAL_GUIDELINES).document(id.toString()).
+                collection(ShelterDB.VISUAL_GUIDELINES_OBJECTS).get().addOnCompleteListener(task ->
+        {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    guides.add(document.toObject(ShelterVisualGuide.class));
+                }
+                _visualStepsLiveData.setValue(guides);
+            } else {
+                Log.d(TAG, "Error getting documents: ", task.getException());
+            }
+        });
 
     }
 

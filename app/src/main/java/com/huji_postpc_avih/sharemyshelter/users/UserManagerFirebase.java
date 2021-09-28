@@ -11,7 +11,6 @@ import com.google.firebase.auth.FirebaseUser;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.UUID;
 import java.util.concurrent.Executor;
 
 import androidx.annotation.NonNull;
@@ -42,6 +41,7 @@ public class UserManagerFirebase implements UserManager {
         auth = FirebaseAuth.getInstance();
         _authenticatedUser = new MutableLiveData<>(null);
         authenticatedUser = _authenticatedUser;
+        _authenticatedUser.setValue(auth.getCurrentUser());
     }
 
 

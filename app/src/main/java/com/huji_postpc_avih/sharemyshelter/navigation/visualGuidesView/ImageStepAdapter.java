@@ -21,14 +21,14 @@ import androidx.recyclerview.widget.RecyclerView;
 public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
 
 
-    private Shelter sh;
-    private Context context;
+    private final Shelter sh;
+    private final Context context;
 
     public ImageStepAdapter(Shelter shelter, LifecycleOwner owner, Context c) {
         context = c;
         sh = shelter;
         if (sh.visualStepsLiveData == null || sh.visualStepsLiveData.getValue() == null) {
-            sh.retrieveVisuals();
+            sh.retrieveVisuals(context);
             sh.visualStepsLiveData.observe(owner, new Observer<List<ShelterVisualGuide>>() {
                 @Override
                 public void onChanged(List<ShelterVisualGuide> shelterVisualGuides) {

@@ -1,20 +1,19 @@
 package com.huji_postpc_avih.sharemyshelter.ui.home;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -99,6 +98,21 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             return;
         }
         googleMap.setMyLocationEnabled(true);
+
+        View locationButton = ((View) binding.fragmentContainer.findViewById(Integer.parseInt("1")).getParent()).findViewById(Integer.parseInt("2"));
+//        locationButton.setVisibility(View.GONE);
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) locationButton.getLayoutParams();
+        // position on right bottom
+        // Align it to - parent BOTTOM|RIGHT
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_LEFT, 0);
+        rlp.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
+
+        // Update margins, set to 80dp
+        final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80,
+                getResources().getDisplayMetrics());
+        rlp.setMargins(margin, margin, margin, margin);
 
     }
 

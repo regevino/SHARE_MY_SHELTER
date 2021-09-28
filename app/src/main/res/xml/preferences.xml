@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <PreferenceCategory android:title="Account">
+        <Preference
+            android:title="Account"
+            android:key="preference_account"/>
+        <Preference
+            android:title="Sign-in"
+            android:key="preference_signin">
+            <intent
+                android:targetPackage="com.huji_postpc_avih.sharemyshelter"
+                android:targetClass="com.huji_postpc_avih.sharemyshelter.users.SignInActivity"
+                />
+        </Preference>
+        <Preference
+            android:title="Sign-out"
+            android:key="preference_signout"
+            >
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Notifications">
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Emergency Navigation">
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/map_type_entries"
+            android:entryValues="@array/map_type_values"
+            android:key="list_preference_map_types"
+            android:title="Map Type"
+            />
+
+    </PreferenceCategory>
+</PreferenceScreen>
