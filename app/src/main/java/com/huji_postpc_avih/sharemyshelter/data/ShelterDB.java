@@ -3,6 +3,7 @@ package com.huji_postpc_avih.sharemyshelter.data;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
@@ -91,8 +92,12 @@ public class ShelterDB {
                             updateLocalShelterLists();
                             addVisualGuides(shelterToAdd);
                         })
-                        .addOnFailureListener(e -> {/*TODO*/}))
-                .addOnFailureListener(command -> {/*TODO*/});
+                        .addOnFailureListener(e -> firebase.collection(SHELTERS).document(shelterToAdd.getId().toString()).delete().addOnSuccessListener(unused -> {
+                            Toast.makeText(app, "Failed to add Shelter", Toast.LENGTH_LONG).show();
+                        })))
+                .addOnFailureListener(command -> {
+                    Toast.makeText(app, "Failed to add Shelter", Toast.LENGTH_LONG).show();
+                });
 
     }
 
@@ -106,8 +111,11 @@ public class ShelterDB {
 
     public void addPublicShelter(Shelter shelterToAdd) {
         firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
-                .set(new ShelterWrapper(shelterToAdd));
-        addVisualGuides(shelterToAdd);
+                .set(new ShelterWrapper(shelterToAdd))
+        .addOnSuccessListener(unused -> {
+            updateLocalShelterLists();
+            addVisualGuides(shelterToAdd);
+        });
     }
 
     public void updateShelter(Shelter shelter) {
