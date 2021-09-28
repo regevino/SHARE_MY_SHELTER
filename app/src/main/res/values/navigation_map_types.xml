@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="map_type_entries">
+        <item>Default</item>
+        <item >Satellite</item>
+    </array>
+    <string-array name="map_type_values">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+</resources>
