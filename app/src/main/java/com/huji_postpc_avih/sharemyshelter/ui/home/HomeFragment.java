@@ -70,9 +70,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     AllSheltersFragment allSheltersFragment = new AllSheltersFragment();
                     ft.replace(R.id.fragmentContainer, allSheltersFragment);
                     //                    fm.executePendingTransactions();
-                }
-                else
-                {
+                } else {
                     ft.replace(R.id.fragmentContainer, finalMapFragment, "mapFragment");
                     finalMapFragment.getMapAsync(HomeFragment.this);
                     //                    fm.executePendingTransactions();
@@ -81,7 +79,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
         return root;
     }
@@ -106,7 +105,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private void showShelters(GoogleMap googleMap) {
         SheltersApp app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
         ShelterDB db = app.getDb();
-        LatLng latlng = new LatLng(0, 0); //default...
+        LatLng latlng = new LatLng(31.771959, 35.217018); //default...
         for (Shelter shelter : db.getAllShelters()) {
             double latitude = shelter.getLat();
             double longitude = shelter.getLng();

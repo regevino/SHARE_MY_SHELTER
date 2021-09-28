@@ -23,6 +23,7 @@ import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -71,6 +72,7 @@ public class AddShelterVisualGuides extends Fragment {
         example.setDescription("Example Description");
         Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
         Bitmap bmp = Bitmap.createBitmap(200, 300, conf);
+        example.setId(UUID.randomUUID());
         example.setImage(bmp);
         example.setStepNumber(1);
         visualGuideList.add(example);

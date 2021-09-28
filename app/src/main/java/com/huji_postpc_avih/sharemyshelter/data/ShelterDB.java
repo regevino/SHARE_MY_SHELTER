@@ -55,6 +55,13 @@ public class ShelterDB {
         // shelter or god erases public shelter directly from the db site.
     }
 
+    public static ShelterDB getInstance(Context c) {
+        if (me == null) {
+            me = new ShelterDB(c);
+        }
+        return me;
+    }
+
     public void updateLocalShelterLists() {
         allShelters = new SheltersHolder(new ArrayList<>());
         userShelters = new SheltersHolder(new ArrayList<>());
@@ -73,13 +80,6 @@ public class ShelterDB {
 
             app.sendBroadcast(new Intent("Added"));
         });
-    }
-
-    public static ShelterDB getInstance(Context c) {
-        if (me == null) {
-            me = new ShelterDB(c);
-        }
-        return me;
     }
 
     public void addPrivateShelter(Shelter shelterToAdd) {
@@ -102,20 +102,29 @@ public class ShelterDB {
     }
 
     private void addVisualGuides(Shelter shelter) {
-        for (ShelterVisualGuide shelterVisualGuide : shelter.visualStepsLiveData.getValue()) {
+        List<ShelterVisualGuide> value = shelter.visualStepsLiveData.getValue();
+        for (int i = 0; i < value.size(); i++) {
+            ShelterVisualGuide shelterVisualGuide = value.get(i);
+            HashMap<String, String> idMap = new HashMap<>();
+            idMap.put("id", shelterVisualGuide.getId().toString());
 
             firebase.collection(VISUAL_GUIDELINES).document(shelter.getId().toString()).
-                    collection(VISUAL_GUIDELINES_OBJECTS).document(Integer.toString(shelterVisualGuide.getStepNumber())).set(shelterVisualGuide);
+                    collection(VISUAL_GUIDELINES_OBJECTS).document(Integer.toString(shelterVisualGuide.getStepNumber())).set(idMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    app.getShelterStorage().uploadBitmapToImages(shelterVisualGuide.getImage(), shelterVisualGuide.getId().toString());
+                }
+            });
         }
     }
 
     public void addPublicShelter(Shelter shelterToAdd) {
         firebase.collection(SHELTERS).document(shelterToAdd.getId().toString())
                 .set(new ShelterWrapper(shelterToAdd))
-        .addOnSuccessListener(unused -> {
-            updateLocalShelterLists();
-            addVisualGuides(shelterToAdd);
-        });
+                .addOnSuccessListener(unused -> {
+                    updateLocalShelterLists();
+                    addVisualGuides(shelterToAdd);
+                });
     }
 
     public void updateShelter(Shelter shelter) {

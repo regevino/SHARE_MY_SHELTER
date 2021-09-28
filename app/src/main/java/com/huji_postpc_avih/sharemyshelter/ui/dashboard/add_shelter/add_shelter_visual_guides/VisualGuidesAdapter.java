@@ -25,6 +25,7 @@ import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder> {
 
@@ -116,6 +117,7 @@ public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder
         Bitmap.Config conf = Bitmap.Config.ARGB_8888; // see other conf types
         Bitmap bmp = Bitmap.createBitmap(200, 300, conf);
         example.setImage(bmp);
+        example.setId(UUID.randomUUID());
         example.setStepNumber(visualGuidesList.size() + 1);
         visualGuidesList.add(example);
         notifyItemInserted(visualGuidesList.size());

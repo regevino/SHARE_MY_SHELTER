@@ -20,6 +20,7 @@ import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
+import com.huji_postpc_avih.sharemyshelter.data.ShelterStorage;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
 import com.huji_postpc_avih.sharemyshelter.navigation.Navigator;
 
@@ -116,6 +117,7 @@ public class AddShelterDetails extends Fragment {
     public void AddShelter(List<ShelterVisualGuide> visualGuides) {
         SheltersApp app = (SheltersApp) root.getContext().getApplicationContext();
         ShelterDB db = app.getDb();
+        ShelterStorage storage = app.getShelterStorage();
         String currentUser = db.getManager().getCurrentUser();
         Shelter newShelter;
         EditText name = root.findViewById(R.id.step_number);

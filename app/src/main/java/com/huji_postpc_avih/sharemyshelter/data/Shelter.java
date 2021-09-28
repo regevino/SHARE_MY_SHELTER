@@ -6,6 +6,7 @@ import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -33,6 +34,7 @@ public class Shelter {
         visualStepsLiveData = _visualStepsLiveData;
 
         geoHashForLocation = GeoFireUtils.getGeoHashForLocation(new GeoLocation(lat, lng));
+        visualGuidelinesUuids = new ArrayList<>();
 
     }
 
@@ -43,6 +45,7 @@ public class Shelter {
     private String name, ownerId;
     private UUID id;
     private ShelterType shelterType;
+    public ArrayList<UUID> visualGuidelinesUuids;
 
     //    private LinkedList<ShelterVisualGuide> visualSteps;
 
