@@ -26,6 +26,7 @@ public class ShelterVisualGuide {
     }
 
     public Bitmap getImage() {
+
         return image;
     }
 
