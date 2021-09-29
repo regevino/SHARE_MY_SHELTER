@@ -1,20 +1,18 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
-import android.graphics.Bitmap;
-
-import java.util.UUID;
-
 public class ShelterVisualGuideNoImage {
 
     private String description;
-    private UUID id;
+    private String id;
     private int stepNumber;
 
 //    private Bitmap image;
 
+    public ShelterVisualGuideNoImage()
+    {}
 
     public ShelterVisualGuideNoImage(ShelterVisualGuide shelterVisualGuide) {
-        this.id = shelterVisualGuide.getId();
+        this.id = shelterVisualGuide.getId().toString();
         this.description = shelterVisualGuide.getDescription();
         this.stepNumber = shelterVisualGuide.getStepNumber();
     }
@@ -39,11 +37,11 @@ public class ShelterVisualGuideNoImage {
     }
 
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
         this.id = id;
     }
 }

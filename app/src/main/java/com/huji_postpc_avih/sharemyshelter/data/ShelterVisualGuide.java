@@ -26,7 +26,7 @@ public class ShelterVisualGuide {
     }
 
     public ShelterVisualGuide(ShelterVisualGuideNoImage visualGuideNoImage, Bitmap im) {
-        this.id = visualGuideNoImage.getId();
+        this.id = UUID.fromString(visualGuideNoImage.getId());
         this.description = visualGuideNoImage.getDescription();
         this.stepNumber = visualGuideNoImage.getStepNumber();
         this.image = im;
