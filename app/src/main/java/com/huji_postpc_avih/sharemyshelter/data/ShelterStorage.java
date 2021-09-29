@@ -20,7 +20,7 @@ import java.io.OutputStream;
 public class ShelterStorage {
     private static final int MB = 1024 * 1024;
     private static ShelterStorage me = null;
-    FirebaseStorage firebaseStorage = null;
+    private FirebaseStorage firebaseStorage = null;
     private SheltersApp app;
 
 

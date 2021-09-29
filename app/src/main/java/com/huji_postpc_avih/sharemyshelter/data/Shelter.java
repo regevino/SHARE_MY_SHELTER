@@ -1,15 +1,21 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.util.Log;
 
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.gson.Gson;
+import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -66,18 +72,38 @@ public class Shelter {
             visualStepsLiveData = _visualStepsLiveData;
         }
         LinkedList<ShelterVisualGuide> guides = new LinkedList<>();
+        LinkedList<ShelterVisualGuideNoImage> visualsNoImage = new LinkedList<>();
         FirebaseFirestore.getInstance().collection(ShelterDB.VISUAL_GUIDELINES).document(id.toString()).
                 collection(ShelterDB.VISUAL_GUIDELINES_OBJECTS).get().addOnCompleteListener(task ->
         {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    guides.add(document.toObject(ShelterVisualGuide.class));
+
+                    visualsNoImage.add(document.toObject(ShelterVisualGuideNoImage.class));
+//                    guides.add(document.toObject(Shelter.class));
                 }
-                _visualStepsLiveData.setValue(guides);
+                for (int i = 0; i < visualsNoImage.size(); i++) {
+                    ShelterVisualGuideNoImage visualGuideNoImage = visualsNoImage.get(i);
+                    Task<byte[]> task1 = ((SheltersApp) c.getApplicationContext()).getShelterStorage().downloadBitmapFromImages(visualGuideNoImage.getId().toString());
+                    task1.addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                        @Override
+                        public void onSuccess(byte[] bytes) {
+                            Bitmap image = getBitmapFromByteArray(bytes);
+                            ShelterVisualGuide visualGuide = new ShelterVisualGuide(visualGuideNoImage, image);
+                            guides.add(visualGuide);
+                            _visualStepsLiveData.setValue(guides); //TODO: it set the value each iteration. ask Avinoam if its ok.
+                        }
+                    });
+                }
             } else {
                 Log.d(TAG, "Error getting documents: ", task.getException());
             }
         });
+
+    }
+
+    private Bitmap getBitmapFromByteArray(byte[] bytes) {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
 
     }
 
