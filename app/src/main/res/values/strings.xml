@@ -10,4 +10,5 @@
     <string name="addShelterDetailsHeader">Add shelter Details</string>
     <string name="Private">Private</string>
     <string name="Public">Public</string>
+    <string name="fab_to_add_shelter">fab to add shelter</string>
 </resources>

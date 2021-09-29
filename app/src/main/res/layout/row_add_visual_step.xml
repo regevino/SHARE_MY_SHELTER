@@ -15,8 +15,19 @@
         app:layout_constraintStart_toEndOf="@id/add_image_text_view"
         app:layout_constraintTop_toTopOf="parent"
 
-
         app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <ImageView
+        android:id="@+id/image_added"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="40dp"
+        android:visibility="invisible"
+        app:layout_constraintStart_toEndOf="@id/add_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/fui_ic_check_circle_black_128dp" />
+
 
     <TextView
         android:id="@+id/step_number"
@@ -62,21 +73,13 @@
         app:srcCompat="@android:drawable/ic_menu_add" />
 
     <View
-        android:layout_width="174dp"
+        android:layout_width="match_parent"
         android:layout_height="3dp"
+
         android:layout_marginBottom="40dp"
         android:background="@android:color/darker_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/add_visual_guide"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <View
-        android:layout_width="174dp"
-        android:layout_height="3dp"
-        android:layout_marginBottom="40dp"
-        android:background="@android:color/darker_gray"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/add_visual_guide" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -60,6 +60,7 @@ public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder
 //            getImageView().setImageBitmap(r.getBitmap());
                             Bitmap image = r.getBitmap();
                             visualGuide.setImage(image);
+                            holder.imageAdded.setVisibility(View.VISIBLE);
 
 
                             //Image path
