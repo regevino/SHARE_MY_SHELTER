@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.util.Log;
 
@@ -22,23 +24,25 @@ import com.google.maps.model.Unit;
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.core.app.ActivityCompat;
 
 public class Navigator {
     private static final String TAG = "NAVIGATOR";
-        private Activity activity;
+    private Activity activity;
     private Context context;
 
     public Navigator(Activity activity) {
         this.activity = activity;
     }
 
-    public Navigator(Context c) {
-        this.context = c;
-    }
+//    public Navigator(Context c) {
+//        this.context = c;
+//    }
 
     /**
      * Finds the location of the user.
@@ -101,4 +105,19 @@ public class Navigator {
         return null;
     }
 
+    public String getAddress(double lng, double lat) {
+        Geocoder geocoder;
+        List<Address> addresses = null;
+        geocoder = new Geocoder(activity, Locale.getDefault());
+
+        try {
+            addresses = geocoder.getFromLocation(lat, lng, 1);
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            return address + '\n' + city + '\n' + state;
+        } catch (IOException e) {
+            return null;
+        }
+    }
 }
