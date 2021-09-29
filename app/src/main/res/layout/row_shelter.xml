@@ -7,7 +7,7 @@
 
     <Switch
         android:id="@+id/typeSwitch"
-        android:layout_width="85dp"
+        android:layout_width="95dp"
         android:layout_height="wrap_content"
         android:text="Switch"
         android:layout_marginEnd="20dp"
