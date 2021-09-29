@@ -3,6 +3,7 @@ package com.huji_postpc_avih.sharemyshelter.navigation;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.WindowManager;
@@ -13,6 +14,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Dash;
 import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
@@ -38,7 +40,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -55,6 +59,7 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
     private Shelter targetShelter;
     private double startLong;
     private double startLat;
+    private boolean followLocation;
     private Date arrivalDeadline;
     private ShelterDB db;
     private static final String TAG = "NavigateToShelter";
@@ -92,11 +97,15 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
         new CountDownTimer(arrivalDeadline.getTime() - new Date().getTime(), 1000) {
 
             public void onTick(long millisUntilFinished) {
-                timerText.setText("Alert Time: " + millisUntilFinished / 1000 + "s");
+                String timeRemaining = String.format(Locale.ENGLISH, "Remaining Time:\n%02d:%02d",
+                        TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                        TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
+                timerText.setText(timeRemaining);
             }
 
             public void onFinish() {
-                timerText.setText("Find Cover!");
+                timerText.setText("Remaining Time:\n00:00\nFind Cover!");
             }
         }.start();
 
@@ -134,6 +143,50 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker))
                 .title(targetShelter.getName()));
 
+        drawPolyLine(mMap, start, target);
+        LatLngBounds bounds = new LatLngBounds.Builder().include(start).include(target).build();
+//        mMap.getUiSettings().setZoomControlsEnabled(true);
+        followLocation = true;
+        mMap.setOnMyLocationChangeListener(new GoogleMap.OnMyLocationChangeListener() {
+            @Override
+            public void onMyLocationChange(@NonNull Location location) {
+                if(followLocation) {
+                    mapFollowLocation(location, mMap, bounds);
+                }
+            }
+        });
+        mMap.setOnMyLocationClickListener(new GoogleMap.OnMyLocationClickListener() {
+            @Override
+            public void onMyLocationClick(@NonNull Location location) {
+                followLocation = true;
+                mapFollowLocation(location, mMap, bounds);
+            }
+        });
+        mMap.setOnCameraMoveStartedListener(new GoogleMap.OnCameraMoveStartedListener() {
+            @Override
+            public void onCameraMoveStarted(int i) {
+                if (i == REASON_GESTURE)
+                {
+                    followLocation = false;
+                }
+            }
+        });
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(start));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 50));
+    }
+
+    private void mapFollowLocation(Location location, GoogleMap mMap, LatLngBounds bounds) {
+        mMap.moveCamera(CameraUpdateFactory.newCameraPosition(CameraPosition.builder()
+                .bearing(location.getBearing())
+                .target(new LatLng(location.getLatitude(), location.getLongitude()))
+                .zoom(mMap.getCameraPosition().zoom)
+                .build()
+        ));
+
+    }
+
+    private void drawPolyLine(GoogleMap mMap, LatLng start, LatLng target) {
         //Define list to get all latlng for the route
         List<LatLng> path = new ArrayList<>();
 
@@ -185,14 +238,9 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
                     addAll(path).
                     endCap(new RoundCap()).
                     color(Color.RED).
-                    width(5).
+                    width(15).
                     pattern(Arrays.asList(new Gap(2F), new Dash(2F)));
             mMap.addPolyline(opts);
         }
-
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(start));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(new LatLngBounds.Builder().include(start).include(target).build(), 50));
     }
 }
