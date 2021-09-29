@@ -27,12 +27,20 @@ public class Shelter {
 
     private static final String TAG = "SHELTER";
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public enum ShelterType {PRIVATE, PUBLIC}
 
     public Shelter() {
     }
 
-    public Shelter(Location loc, String name, ShelterType type, String ownerId) {
+    public Shelter(Location loc, String name, ShelterType type, String ownerId, String description) {
         if (loc != null) {
             this.lat = loc.getLatitude();
             this.lng = loc.getLongitude();
@@ -42,6 +50,7 @@ public class Shelter {
         this.id = UUID.randomUUID();
         this.ownerId = ownerId;
         this.isOpen = true;
+        this.description = description;
         _visualStepsLiveData = new MutableLiveData<>();
         visualStepsLiveData = _visualStepsLiveData;
 
@@ -56,6 +65,7 @@ public class Shelter {
     private String name, ownerId;
     private UUID id;
     private ShelterType shelterType;
+    private String description;
 
     //    private LinkedList<ShelterVisualGuide> visualSteps;
 
@@ -205,6 +215,7 @@ public class Shelter {
         this.lng = wrapper.getLng();
         this.id = gson.fromJson(wrapper.getId(), UUID.class);
         this.ownerId = wrapper.getOwnerId();
+        this.description = wrapper.getDescription();
         this.name = wrapper.getName();
         this.shelterType = wrapper.getType();
         this.isOpen = wrapper.isOpen();

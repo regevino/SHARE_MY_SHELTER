@@ -9,6 +9,7 @@ public class ShelterWrapper {
     private String id;
     private String ownerId;
     private String name;
+    private String description;
     private Shelter.ShelterType type;
     private String geoHashForLocation;
 
@@ -19,6 +20,7 @@ public class ShelterWrapper {
         lat = shelter.getLat();
         lng = shelter.getLng();
         id = gson.toJson(shelter.getId());
+        this.description = shelter.getDescription();
         ownerId = shelter.getOwnerId();
         name = shelter.getName();
         type = shelter.getShelterType();
@@ -61,5 +63,13 @@ public class ShelterWrapper {
     public void setOpen(boolean isOpen)
     {
         this.isOpen = isOpen;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

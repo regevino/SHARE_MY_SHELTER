@@ -148,7 +148,7 @@ public class ShelterDB {
     }
 
     List<Shelter> getSheltersByUserId(UUID userId) {
-
+        //We need this only if we will start working with large amount of shelters.
         return null;
     }
 
