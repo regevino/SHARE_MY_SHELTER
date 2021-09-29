@@ -3,7 +3,6 @@ package com.huji_postpc_avih.sharemyshelter.navigation.visualGuidesView;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -133,9 +132,9 @@ public class LinePagerIndicatorDecoration extends RecyclerView.ItemDecoration {
         }
     }
 
-    @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        super.getItemOffsets(outRect, view, parent, state);
-        outRect.bottom = mIndicatorHeight;
-    }
+//    @Override
+//    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//        super.getItemOffsets(outRect, view, parent, state);
+//        outRect.bottom = mIndicatorHeight;
+//    }
 }
