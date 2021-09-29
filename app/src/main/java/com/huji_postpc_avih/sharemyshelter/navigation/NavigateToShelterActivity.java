@@ -78,7 +78,7 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
         arrivalDeadline = new Date(getIntent().getLongExtra(EXTRA_KEY_END_ALERT_TIME, new Date().getTime()));
 
         RecyclerView imagesRecycler = findViewById(R.id.visual_guides_recycler);
-        ImageStepAdapter imageStepAdapter = new ImageStepAdapter(targetShelter, this, this);
+        ImageStepAdapter imageStepAdapter = new ImageStepAdapter(findViewById(R.id.navigate_to_shelter_fullscreen_image), targetShelter, this, this);
 
         imagesRecycler.setNestedScrollingEnabled(false);
         imagesRecycler.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
