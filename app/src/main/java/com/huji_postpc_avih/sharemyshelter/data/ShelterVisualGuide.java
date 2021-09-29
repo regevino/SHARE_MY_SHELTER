@@ -1,10 +1,7 @@
 package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.UUID;
 
 public class ShelterVisualGuide {
@@ -24,10 +21,16 @@ public class ShelterVisualGuide {
     //    private byte[] imageByteArray;
     //    private ArrayList<Byte> imageByteList;
     private int stepNumber;
-//    private int width;
-//    private int height;
-//    private String path;
 
+    public ShelterVisualGuide() {
+    }
+
+    public ShelterVisualGuide(ShelterVisualGuideNoImage visualGuideNoImage, Bitmap im) {
+        this.id = visualGuideNoImage.getId();
+        this.description = visualGuideNoImage.getDescription();
+        this.stepNumber = visualGuideNoImage.getStepNumber();
+        this.image = im;
+    }
 
     public void setDescription(String description) {
         this.description = description;

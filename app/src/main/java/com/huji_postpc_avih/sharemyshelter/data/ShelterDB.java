@@ -105,11 +105,13 @@ public class ShelterDB {
         List<ShelterVisualGuide> value = shelter.visualStepsLiveData.getValue();
         for (int i = 0; i < value.size(); i++) {
             ShelterVisualGuide shelterVisualGuide = value.get(i);
-            HashMap<String, String> idMap = new HashMap<>();
-            idMap.put("id", shelterVisualGuide.getId().toString());
+            ShelterVisualGuideNoImage visualGuideNoImage = new ShelterVisualGuideNoImage(shelterVisualGuide);
+
+//            HashMap<String, String> idMap = new HashMap<>();
+//            idMap.put("id", shelterVisualGuide.getId().toString());
 
             firebase.collection(VISUAL_GUIDELINES).document(shelter.getId().toString()).
-                    collection(VISUAL_GUIDELINES_OBJECTS).document(Integer.toString(shelterVisualGuide.getStepNumber())).set(idMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    collection(VISUAL_GUIDELINES_OBJECTS).document(Integer.toString(shelterVisualGuide.getStepNumber())).set(visualGuideNoImage).addOnSuccessListener(new OnSuccessListener<Void>() {
                 @Override
                 public void onSuccess(Void unused) {
                     app.getShelterStorage().uploadBitmapToImages(shelterVisualGuide.getImage(), shelterVisualGuide.getId().toString());
@@ -146,7 +148,7 @@ public class ShelterDB {
     }
 
     List<Shelter> getSheltersByUserId(UUID userId) {
-
+        //We need this only if we will start working with large amount of shelters.
         return null;
     }
 
@@ -162,6 +164,7 @@ public class ShelterDB {
                 userShelters.deleteShelter(shelterId);
                 app.sendBroadcast(new Intent("Added"));
                 deleteShelterRefFromUser(shelterId);
+                updateLocalShelterLists();
             }
         });
         return false;

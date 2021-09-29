@@ -17,10 +17,12 @@ public class VisualGuidesHolder extends RecyclerView.ViewHolder {
     public TextView stepNumber;
     public ImageView addVisualGuide;
     public EditText imageDescription;
+    public ImageView imageAdded;
 
     public VisualGuidesHolder(@NonNull View itemView) {
         super(itemView);
         addImage = itemView.findViewById(R.id.add_image);
+        imageAdded = itemView.findViewById(R.id.image_added);
         stepNumber = itemView.findViewById(R.id.step_number);
         addVisualGuide = itemView.findViewById(R.id.add_visual_guide);
         imageDescription = itemView.findViewById(R.id.description_edit_text);

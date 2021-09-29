@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentManager;
@@ -17,13 +15,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
-import com.huji_postpc_avih.sharemyshelter.ui.AllSheltersHolder;
 import com.vansuita.pickimage.bean.PickResult;
 import com.vansuita.pickimage.bundle.PickSetup;
 import com.vansuita.pickimage.dialog.PickImageDialog;
 import com.vansuita.pickimage.listeners.IPickResult;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,6 +60,7 @@ public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder
 //            getImageView().setImageBitmap(r.getBitmap());
                             Bitmap image = r.getBitmap();
                             visualGuide.setImage(image);
+                            holder.imageAdded.setVisibility(View.VISIBLE);
 
 
                             //Image path

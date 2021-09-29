@@ -122,11 +122,13 @@ public class AddShelterDetails extends Fragment {
         Shelter newShelter;
         EditText name = root.findViewById(R.id.step_number);
         Switch isPrivate = root.findViewById(R.id.shelterMode);
+        EditText desc = root.findViewById(R.id.description);
+
 
         if (isPrivate.isChecked()) {
-            newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PRIVATE, currentUser);
+            newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PRIVATE, currentUser, desc.getText().toString());
         } else {
-            newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null);
+            newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null, desc.getText().toString());
         }
         Navigator navigator = new Navigator((Activity) root.getContext());
         navigator.getCurrentLocation().addOnSuccessListener(location -> {

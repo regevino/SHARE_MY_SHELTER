@@ -1,6 +1,7 @@
 package com.huji_postpc_avih.sharemyshelter.ui.home;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -18,12 +19,14 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.databinding.FragmentHomeBinding;
+import com.huji_postpc_avih.sharemyshelter.ui.ShelterPreviewActivity;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -54,6 +57,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         }
 
         mapFragment.getMapAsync(this);
+
 
         Spinner modeSpinner = root.findViewById(R.id.modeSpinner);
         String[] items = new String[]{"Map", "List"};
@@ -93,6 +97,22 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker) {
+                Shelter shelter = (Shelter) (marker.getTag());
+                if (shelter == null) {
+                    return false;
+                }
+                Intent intent = new Intent(getActivity(), ShelterPreviewActivity.class);
+                intent.putExtra("name", shelter.getName());
+                intent.putExtra("description", shelter.getDescription());
+                intent.putExtra("id", shelter.getId());
+                startActivity(intent);
+                return false;
+            }
+        });
         showShelters(googleMap);
         googleMap.setIndoorEnabled(false);
         if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -128,7 +148,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             googleMap.addMarker(new MarkerOptions()
                     .position(latlng)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker))
-                    .title(shelter.getName()));
+                    .title(shelter.getName()))
+                    .setTag(shelter);
+
         }
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f));
 

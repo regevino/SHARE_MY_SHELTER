@@ -1,12 +1,14 @@
 package com.huji_postpc_avih.sharemyshelter.ui.dashboard;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +17,7 @@ import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
+import com.huji_postpc_avih.sharemyshelter.ui.ShelterPreviewActivity;
 
 import java.util.ArrayList;
 
@@ -51,32 +54,33 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
         ImageView deleteButton = holder.getDeleteButton();
 
 
-        holder.getName().setText(shelter.getName());
+        TextView name = holder.getName();
+        name.setText(shelter.getName());
+        name.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ShelterPreviewActivity.class);
+            intent.putExtra("name", shelter.getName());
+            intent.putExtra("description", shelter.getDescription());
+            intent.putExtra("id", shelter.getId());
+            context.startActivity(intent);
+        });
+
         typeSwitch.setChecked(shelter.isOpen());
         typeSwitch.setText(typeSwitch.isChecked() ? "Open" : "Closed");
-        typeSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Switch typeSwitch = holder.getTypeSwitch();
-                shelter.setOpen(typeSwitch.isChecked());
-                typeSwitch.setText(typeSwitch.isChecked() ? "Open" : "Closed");
-                SheltersApp app = (SheltersApp) context.getApplicationContext();
-                ShelterDB db = app.getDb();
-                db.updateShelter(shelter);
+        typeSwitch.setOnClickListener(view -> {
+            Switch typeSwitch1 = holder.getTypeSwitch();
+            shelter.setOpen(typeSwitch1.isChecked());
+            typeSwitch1.setText(typeSwitch1.isChecked() ? "Open" : "Closed");
+            SheltersApp app = (SheltersApp) context.getApplicationContext();
+            ShelterDB db = app.getDb();
+            db.updateShelter(shelter);
 
-            }
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SheltersApp app = (SheltersApp) context.getApplicationContext();
-                ShelterDB db = app.getDb();
-                db.deletePrivateShelter(shelter.getId());
-            }
+        deleteButton.setOnClickListener(view -> {
+            SheltersApp app = (SheltersApp) context.getApplicationContext();
+            ShelterDB db = app.getDb();
+            db.deletePrivateShelter(shelter.getId());
         });
-
-
     }
 
     @Override
