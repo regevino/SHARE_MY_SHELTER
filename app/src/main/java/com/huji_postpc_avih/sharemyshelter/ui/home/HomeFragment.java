@@ -3,14 +3,20 @@ package com.huji_postpc_avih.sharemyshelter.ui.home;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CursorAdapter;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -38,6 +44,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
+    private SimpleCursorAdapter mAdapter;
+    private static final String[] SUGGESTIONS = {
+            "Bauru", "Sao Paulo", "Rio de Janeiro",
+            "Bahia", "Mato Grosso", "Minas Gerais",
+            "Tocantins", "Rio Grande do Sul"
+    };
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -86,6 +98,41 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+
+        SearchView searchView = root.findViewById(R.id.search_bar);
+        final String[] from = new String[] {"cityName"};
+        final int[] to = new int[] {android.R.id.text1};
+        mAdapter = new SimpleCursorAdapter(getContext(), R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
+        searchView.setSuggestionsAdapter(mAdapter);
+        searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
+            @Override
+            public boolean onSuggestionSelect(int position) {
+                Cursor cursor = (Cursor) mAdapter.getItem(position);
+                String txt = cursor.getString(cursor.getColumnIndex("cityName"));
+                searchView.setQuery(txt, true);
+                return true;
+            }
+
+            @Override
+            public boolean onSuggestionClick(int position) {
+                // Your code here
+                return true;
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                populateAdapter(s);
+                return false;
+            }
+        });
+
         return root;
     }
 
@@ -155,4 +202,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f));
 
     }
+
+    // You must implements your logic to get data using OrmLite
+    private void populateAdapter(String query) {
+        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "cityName" });
+        for (int i=0; i<SUGGESTIONS.length; i++) {
+            if (SUGGESTIONS[i].toLowerCase().startsWith(query.toLowerCase()))
+                c.addRow(new Object[] {i, SUGGESTIONS[i]});
+        }
+        mAdapter.changeCursor(c);
+    }
+
 }
