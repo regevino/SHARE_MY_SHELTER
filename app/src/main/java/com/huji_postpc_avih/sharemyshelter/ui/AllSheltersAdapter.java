@@ -20,7 +20,7 @@ import com.huji_postpc_avih.sharemyshelter.navigation.Navigator;
 
 import java.util.ArrayList;
 
-public class AllSheltersAdapter extends RecyclerView.Adapter<AllSheltersHolder>{
+public class AllSheltersAdapter extends RecyclerView.Adapter<AllSheltersHolder> {
     private ArrayList<Shelter> shelters;
     private ShelterDB shelterDB;
     private FragmentActivity activity;
@@ -59,15 +59,20 @@ public class AllSheltersAdapter extends RecyclerView.Adapter<AllSheltersHolder>{
         navigator.getCurrentLocation().addOnSuccessListener(location -> {
             if (location == null) {
                 Toast.makeText(activity, "Failed to get current location :(", Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 Location sheltersLocation = new Location("");
                 sheltersLocation.setLatitude(shelter.getLat());
                 sheltersLocation.setLongitude(shelter.getLng());
 
-                float distanceInKilometers = sheltersLocation.distanceTo(location) / 1000;
-                String rangeText = distanceInKilometers + " km";
+                float distanceInMeters = sheltersLocation.distanceTo(location);
+                String rangeText;
+                if (distanceInMeters >= 1000) {
+                    String s = Float.toString(distanceInMeters / 1000);
+                    rangeText = String.format("%.1f", distanceInMeters / 1000) + " km";
+                } else {
+                    String s = Float.toString(distanceInMeters);
+                    rangeText = String.format("%.1f", distanceInMeters) + " m";
+                }
                 range.setText(rangeText);
             }
         });
