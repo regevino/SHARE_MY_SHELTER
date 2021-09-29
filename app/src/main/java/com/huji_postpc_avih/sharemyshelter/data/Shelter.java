@@ -55,7 +55,6 @@ public class Shelter {
         visualStepsLiveData = _visualStepsLiveData;
 
         geoHashForLocation = GeoFireUtils.getGeoHashForLocation(new GeoLocation(lat, lng));
-
     }
 
     private boolean isOpen;
