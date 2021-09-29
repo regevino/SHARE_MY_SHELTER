@@ -26,7 +26,8 @@
         android:visibility="invisible"
         app:layout_constraintStart_toEndOf="@id/add_image"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/fui_ic_check_circle_black_128dp" />
+        app:srcCompat="@drawable/fui_ic_check_circle_black_128dp"
+        tools:visibility="visible" />
 
 
     <TextView
