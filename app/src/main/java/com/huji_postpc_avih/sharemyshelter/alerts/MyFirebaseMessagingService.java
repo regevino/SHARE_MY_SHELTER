@@ -2,8 +2,10 @@ package com.huji_postpc_avih.sharemyshelter.alerts;
 
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
@@ -18,19 +20,26 @@ import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.navigation.NavigateToShelterActivity;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Random;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCMService";
+    public static final String ALERTS_TOPIC = "/topics/Alerts";
+    public static final String TEST_MESSAGE_TOPIC_PREFIX = "/topics/test_message";
+    public static final String INTENT_ACTION_DISMISS = "Dismiss";
+    public static final String EXTRA_NOTIFICATION_ID = "notification_id";
+    public static final String EXTRA_IS_FOREGROUND_NOTIFICATION = "Service_to_background";
 
     public static void initialiseMessaging(Context context)
     {
-        FirebaseMessaging.getInstance().subscribeToTopic("Alerts")
+        FirebaseMessaging.getInstance().subscribeToTopic(ALERTS_TOPIC)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -47,38 +56,85 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public MyFirebaseMessagingService() {
     }
 
+
+
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-        // ...
 
-        // TODO(developer): Handle FCM messages here.
-        // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-//            if (/* Check if data needs to be processed by long running job */ true) {
-//                // For long-running tasks (10 seconds or more) use WorkManager.
-//                scheduleJob();
-//            } else {
-//                // Handle message within 10 seconds
-//                handleNow();
-//            }
+            if (remoteMessage.getFrom().equals(ALERTS_TOPIC)) {
+                if (checkIfInArea(remoteMessage.getData())) {
+                    launchNavigation(extractDeadlineFromData(remoteMessage.getData()));
+                }
+            }
+            if (remoteMessage.getFrom().startsWith(TEST_MESSAGE_TOPIC_PREFIX)) {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(remoteMessage.getFrom());
+                testAlert();
+            }
 
         }
+    }
 
-        // Check if message contains a notification payload.
-        if (remoteMessage.getNotification() != null) {
-            Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
-        }
+    private boolean checkIfInArea(Map<String, String> messageData)
+    {
+        return true;
+    }
 
+    private long extractDeadlineFromData(Map<String, String> messageData)
+    {
+        return new Date().getTime() + 1000 * 60 * 5;
+    }
+
+    public void testAlert()
+    {
+        launchNavigation(new Date().getTime() + 1000 * 60 * 5);
+    }
+
+    private void launchNavigation(long arrivalDeadline) {
+
+        BroadcastReceiver b = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                switch (intent.getAction())
+                {
+                    case INTENT_ACTION_DISMISS:
+                        NotificationManagerCompat.from(context).cancel(intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));;
+                        getBaseContext().unregisterReceiver(this);
+                    default:
+                        break;
+                }
+            }
+        };
+        int notification_id = new Random(123456).nextInt();
+
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(INTENT_ACTION_DISMISS);
+        getBaseContext().registerReceiver(b, intentFilter);
+        Intent dismissIntent = new Intent();
+        dismissIntent.setAction(INTENT_ACTION_DISMISS);
+        dismissIntent.putExtra(EXTRA_NOTIFICATION_ID, notification_id);
+        PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, dismissIntent, 0);
 
         Intent fullScreenIntent = new Intent(this, AlertRecievedActivity.class);
-        long arrivalDeadline = new Date().getTime() + 1000 * 60 * 5;
         fullScreenIntent.putExtra(NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME, arrivalDeadline);
+        fullScreenIntent.putExtra(EXTRA_NOTIFICATION_ID, notification_id);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+
+            NotificationCompat.Builder notificationBuilder =
+                    new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
+                            .setSmallIcon(R.drawable.ic_alert_notification)
+                            .setContentTitle("Red Alert!")
+                            .setContentText("Red Alert in your area")
+                            .addAction(R.drawable.ic_alert_notification, "Dismiss", dismissPendingIntent)
+                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
+            Notification notification = notificationBuilder.build();
+            NotificationManagerCompat.from(this).notify(notification_id, notification);
+
 
             fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -86,6 +142,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         else {
             Log.d(TAG, "Starting with full screen intent");
+            fullScreenIntent.putExtra(EXTRA_IS_FOREGROUND_NOTIFICATION, true);
             fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
@@ -93,27 +150,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
-                            .setSmallIcon(R.drawable.common_full_open_on_phone)
+                            .setSmallIcon(R.drawable.ic_alert_notification)
                             .setContentTitle("Red Alert!")
                             .setContentText("Red Alert in your area")
                             .setPriority(NotificationCompat.PRIORITY_MAX)
-
-                            // Use a full-screen intent only for the highest-priority alerts where you
-                            // have an associated activity that you would like to launch after the user
-                            // interacts with the notification. Also, if your app targets Android 10
-                            // or higher, you need to request the USE_FULL_SCREEN_INTENT permission in
-                            // order for the platform to invoke this notification.
                             .setFullScreenIntent(fullScreenPendingIntent, true);
 
             Notification notification = notificationBuilder.build();
 
-            // notificationId is a unique int for each notification that you must define
-
-            startForeground(new Random(123456).nextInt(), notification);
+            startForeground(notification_id, notification);
             // TODO Make sure service is moved back to background later.
         }
-
-
     }
 
     @Override
