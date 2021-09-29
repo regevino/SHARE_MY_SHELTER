@@ -15,7 +15,10 @@
         android:roundIcon="@mipmap/ic_launcher_red_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ShareMyShelter">
-        <activity android:name=".navigation.NavigateToShelterActivity"></activity>
+        <activity
+            android:name=".ui.ShelterPreviewActivity"
+            android:exported="true" />
+        <activity android:name=".navigation.NavigateToShelterActivity" />
         <activity android:name=".users.SignInActivity" />
         <activity
             android:name=".alerts.AlertRecievedActivity"
@@ -49,7 +52,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
 
         <provider
             android:name="androidx.core.content.FileProvider"

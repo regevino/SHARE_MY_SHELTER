@@ -1,6 +1,7 @@
 package com.huji_postpc_avih.sharemyshelter.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,6 +55,13 @@ public class AllSheltersAdapter extends RecyclerView.Adapter<AllSheltersHolder> 
         TextView openCloseSwitch = holder.getType();
 
         name.setText(shelter.getName());
+        name.setOnClickListener(v -> {
+            Intent intent = new Intent(activity, ShelterPreviewActivity.class);
+            intent.putExtra("name", shelter.getName());
+            intent.putExtra("description", shelter.getDescription());
+            intent.putExtra("id", shelter.getId());
+            activity.startActivity(intent);
+        });
 
         Navigator navigator = new Navigator(activity);
         navigator.getCurrentLocation().addOnSuccessListener(location -> {
