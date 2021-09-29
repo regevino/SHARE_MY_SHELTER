@@ -27,8 +27,8 @@ public class ShelterPreviewActivity extends AppCompatActivity {
         String desc = intent.getStringExtra("description");
         UUID id = (UUID) intent.getSerializableExtra("id");
 
-        title.setText(name);
-        description.setText(desc);
+        title.setText(String.format("Name:\n%s", name));
+        description.setText(String.format("Description: %s", desc));
 
     }
 }
