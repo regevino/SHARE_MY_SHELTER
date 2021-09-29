@@ -164,6 +164,7 @@ public class ShelterDB {
                 userShelters.deleteShelter(shelterId);
                 app.sendBroadcast(new Intent("Added"));
                 deleteShelterRefFromUser(shelterId);
+                updateLocalShelterLists();
             }
         });
         return false;
