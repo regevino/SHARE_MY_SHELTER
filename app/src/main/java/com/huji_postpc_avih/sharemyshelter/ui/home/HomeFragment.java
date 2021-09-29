@@ -16,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.huji_postpc_avih.sharemyshelter.R;
@@ -126,6 +127,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             latlng = new LatLng(latitude, longitude);
             googleMap.addMarker(new MarkerOptions()
                     .position(latlng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker))
                     .title(shelter.getName()));
         }
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f));
