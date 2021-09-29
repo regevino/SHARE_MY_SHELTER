@@ -12,6 +12,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Dash;
 import com.google.android.gms.maps.model.Gap;
 import com.google.android.gms.maps.model.LatLng;
@@ -128,7 +129,10 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
 //        mMap.addMarker(new MarkerOptions().position(start).title("Nati HaMefanek"));
 
         LatLng target = new LatLng(targetShelter.getLat(), targetShelter.getLng());
-        mMap.addMarker(new MarkerOptions().position(target).title(targetShelter.getName()));
+        mMap.addMarker(new MarkerOptions()
+                .position(target)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_map_marker))
+                .title(targetShelter.getName()));
 
         //Define list to get all latlng for the route
         List<LatLng> path = new ArrayList<>();
