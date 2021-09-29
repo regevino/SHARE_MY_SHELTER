@@ -9,10 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
 import com.vansuita.pickimage.bean.PickResult;
@@ -22,6 +18,10 @@ import com.vansuita.pickimage.listeners.IPickResult;
 
 import java.util.List;
 import java.util.UUID;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder> {
 
@@ -60,6 +60,7 @@ public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder
 //            getImageView().setImageBitmap(r.getBitmap());
                             Bitmap image = r.getBitmap();
                             visualGuide.setImage(image);
+                            holder.imageAdded.setImageBitmap(image);
                             holder.imageAdded.setVisibility(View.VISIBLE);
 
 

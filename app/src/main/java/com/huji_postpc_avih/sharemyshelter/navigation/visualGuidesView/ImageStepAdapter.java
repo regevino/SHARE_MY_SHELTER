@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
@@ -23,6 +24,7 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
 
     private final Shelter sh;
     private final Context context;
+    private ImageView fullScreenImage;
 
     public ImageStepAdapter(Shelter shelter, LifecycleOwner owner, Context c) {
         context = c;
@@ -37,6 +39,10 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
             });
         }
     }
+    public ImageStepAdapter(ImageView fullScreenImageView, Shelter sh, LifecycleOwner o, Context c){
+        this(sh, o, c);
+        fullScreenImage = fullScreenImageView;
+    }
 
     @NonNull
     @NotNull
@@ -45,7 +51,11 @@ public class ImageStepAdapter extends RecyclerView.Adapter<ImageStepHolder> {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View contextView = inflater.inflate(R.layout.row_visual_step_navigation, parent, false);
-        return new ImageStepHolder(contextView);
+        ImageStepHolder imageStepHolder = new ImageStepHolder(contextView);
+        if (fullScreenImage != null){
+            imageStepHolder.setFullScreenImageView(fullScreenImage);
+        }
+        return imageStepHolder;
     }
 
     @Override
