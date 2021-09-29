@@ -101,7 +101,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public boolean onMarkerClick(@NonNull Marker marker) {
                 Shelter shelter = (Shelter) (marker.getTag());
-                //Using position get Value from arraylist
+                if (shelter == null) {
+                    return false;
+                }
                 Intent intent = new Intent(getActivity(), ShelterPreviewActivity.class);
                 intent.putExtra("name", shelter.getName());
                 intent.putExtra("description", shelter.getDescription());
