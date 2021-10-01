@@ -164,10 +164,25 @@ public class ShelterDB {
                 userShelters.deleteShelter(shelterId);
                 app.sendBroadcast(new Intent("Added"));
                 deleteShelterRefFromUser(shelterId);
+                deleteImagesOfShelter(shelterId);
                 updateLocalShelterLists();
             }
         });
         return false;
+    }
+
+    private void deleteImagesOfShelter(UUID shelterId) {
+        firebase.collection(VISUAL_GUIDELINES).document(shelterId.toString()).collection(VISUAL_GUIDELINES_OBJECTS).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    ShelterVisualGuideNoImage visualGuideNoImage = documentSnapshot.toObject(ShelterVisualGuideNoImage.class);
+                    Task<Void> task = app.getShelterStorage().deleteImage(visualGuideNoImage.getId());
+                }
+            }
+        });
+
+
     }
 
     public Task<List<Shelter>> getNearbyShelters(double longitude, double latitude, int radius) {
