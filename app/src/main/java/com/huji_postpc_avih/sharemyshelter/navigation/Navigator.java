@@ -115,9 +115,22 @@ public class Navigator {
             String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
             String city = addresses.get(0).getLocality();
             String state = addresses.get(0).getAdminArea();
-            return address + '\n' + city + '\n' + state;
+            return address + ' ' + city + ' ' + state;
+        } catch (IOException e) {
+            return "couldn't get address";
+        }
+    }
+
+    public Address getLatLng(String address) {
+        Geocoder geocoder;
+        List<Address> addresses;
+        geocoder = new Geocoder(activity, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocationName(address, 1);
+            return addresses.get(0);
         } catch (IOException e) {
             return null;
         }
+
     }
 }
