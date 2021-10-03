@@ -71,4 +71,17 @@
             android:text="@string/fui_title_register_email" />
 
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/youHaveNoShelters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30dp"
+        android:gravity="center"
+        android:text="You haven't added shelters yet,\n\nStart contribute now!"
+        android:textSize="35sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterVisualGuide;
@@ -82,6 +83,10 @@ public class VisualGuidesAdapter extends RecyclerView.Adapter<VisualGuidesHolder
         holder.addVisualGuide.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (holder.imageDescription.getText().toString().length() == 0) {
+                    Toast.makeText(parentFragmentManager.getFragments().get(0).getContext(), "Please add image description\nto the current image\nbefore adding new Image", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 holder.addVisualGuide.setVisibility(View.GONE);
                 addEmptyVisualGuide();
             }

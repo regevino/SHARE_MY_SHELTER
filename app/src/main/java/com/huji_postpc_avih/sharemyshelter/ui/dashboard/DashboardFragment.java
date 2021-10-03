@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter.AddShelterActivity;
@@ -76,6 +77,14 @@ public class DashboardFragment extends Fragment {
         // Get list of current user's shelters:
         SheltersApp app = (SheltersApp) root.getContext().getApplicationContext();
         ArrayList<Shelter> userShelters = app.getDb().getUserShelters();
+        TextView youHaveNoShelters =  root.findViewById(R.id.youHaveNoShelters);
+        if (userShelters.size()==0){
+
+            youHaveNoShelters.setVisibility(View.VISIBLE);
+        }else{
+            youHaveNoShelters.setVisibility(View.INVISIBLE);
+
+        }
 
         // Set RecyclerView of shelters, adapter etc.
         RecyclerView sheltersList = root.findViewById(R.id.privateShelters);

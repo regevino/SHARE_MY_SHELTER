@@ -1,5 +1,6 @@
 package com.huji_postpc_avih.sharemyshelter.ui.dashboard;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -22,13 +23,8 @@ import com.huji_postpc_avih.sharemyshelter.ui.ShelterPreviewActivity;
 import java.util.ArrayList;
 
 class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
-    //    private ArrayList<Shelter> userShelters;
     private ShelterDB shelterDB;
     private Context context;
-
-//    public void setUserShelters(ArrayList<Shelter> userShelters) {
-//        this.userShelters = userShelters;
-//    }
 
     public void setShelterDB(ShelterDB shelterDB) {
         this.shelterDB = shelterDB;
@@ -52,6 +48,12 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
         Shelter shelter = shelterDB.getUserShelters().get(position);
         Switch typeSwitch = holder.getTypeSwitch();
         ImageView deleteButton = holder.getDeleteButton();
+
+        if (getItemCount() == 0) {
+            ((Activity) context).findViewById(R.id.youHaveNoShelters).setVisibility(View.VISIBLE);
+        }else{
+            ((Activity) context).findViewById(R.id.youHaveNoShelters).setVisibility(View.INVISIBLE);
+        }
 
 
         TextView name = holder.getName();
@@ -80,6 +82,9 @@ class SheltersAdapter extends RecyclerView.Adapter<ShelterHolder> {
             SheltersApp app = (SheltersApp) context.getApplicationContext();
             ShelterDB db = app.getDb();
             db.deletePrivateShelter(shelter.getId());
+            if (getItemCount() == 1) {
+                ((Activity) context).findViewById(R.id.youHaveNoShelters).setVisibility(View.VISIBLE);
+            }
         });
     }
 

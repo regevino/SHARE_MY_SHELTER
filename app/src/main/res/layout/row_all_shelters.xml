@@ -25,7 +25,6 @@
         app:layout_constraintEnd_toStartOf="@id/type"
         app:layout_constraintLeft_toRightOf="@id/name"
         app:layout_constraintTop_toTopOf="parent" />
-    <!--        app:layout_constraintEnd_toStartOf="@+id/name"-->
 
     <TextView
         android:id="@+id/type"
