@@ -104,7 +104,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 {
                     case INTENT_ACTION_DISMISS:
                         NotificationManagerCompat.from(context).cancel(intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));;
-                        getBaseContext().unregisterReceiver(this);
+                        getApplicationContext().unregisterReceiver(this);
                     default:
                         break;
                 }
@@ -114,11 +114,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(INTENT_ACTION_DISMISS);
-        getBaseContext().registerReceiver(b, intentFilter);
+        getApplicationContext().registerReceiver(b, intentFilter);
         Intent dismissIntent = new Intent();
         dismissIntent.setAction(INTENT_ACTION_DISMISS);
         dismissIntent.putExtra(EXTRA_NOTIFICATION_ID, notification_id);
-        PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(getBaseContext(), 0, dismissIntent, 0);
+        PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, dismissIntent, 0);
 
         Intent fullScreenIntent = new Intent(this, AlertRecievedActivity.class);
         fullScreenIntent.putExtra(NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME, arrivalDeadline);
@@ -130,7 +130,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setSmallIcon(R.drawable.ic_alert_notification)
                             .setContentTitle("Red Alert!")
                             .setContentText("Red Alert in your area")
-                            .addAction(R.drawable.ic_alert_notification, "Dismiss", dismissPendingIntent)
+                            .addAction(R.drawable.ic_alert_notification, INTENT_ACTION_DISMISS, dismissPendingIntent)
                             .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
             Notification notification = notificationBuilder.build();
             NotificationManagerCompat.from(this).notify(notification_id, notification);
@@ -155,7 +155,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setContentText("Red Alert in your area")
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setFullScreenIntent(fullScreenPendingIntent, true)
-                            .addAction(R.drawable.ic_alert_notification, "Dismiss", dismissPendingIntent)
+                            .addAction(R.drawable.ic_alert_notification, INTENT_ACTION_DISMISS, dismissPendingIntent)
                             .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
 
             Notification notification = notificationBuilder.build();
@@ -165,20 +165,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
-//        NotificationCompat.Builder notificationBuilder =
-//                new NotificationCompat.Builder(this, "12345")
-//                        .setSmallIcon(R.drawable.common_full_open_on_phone)
-//                        .setContentTitle("Red Alert Running")
-//                        .setContentText("Red Alert is running so you can receive popup notifications")
-//                        .setPriority(NotificationCompat.PRIORITY_HIGH);
-//
-//        Notification notification = notificationBuilder.build();
-//
-//        // notificationId is a unique int for each notification that you must define
-//        Log.d(TAG, "Starting service in foreground");
-//        startForeground(new Random(123456).nextInt(), notification);
-    }
 }
