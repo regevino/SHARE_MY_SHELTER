@@ -137,16 +137,23 @@ public class AddShelterDetails extends Fragment {
         EditText desc = root.findViewById(R.id.description);
 
 
-        if (isPrivate.isChecked()) {
-            newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PRIVATE, currentUser, desc.getText().toString());
-        } else {
-            newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null, desc.getText().toString());
-        }
+        String name1 = name.getText().toString();
+        String description = desc.getText().toString();
 
+        if (isPrivate.isChecked()) {
+            newShelter = new Shelter(null, name1, Shelter.ShelterType.PRIVATE, currentUser, description);
+        } else {
+            newShelter = new Shelter(null, name1, Shelter.ShelterType.PUBLIC, null, description);
+        }
+        if (!validate(newShelter)) {
+            Toast.makeText(root.getContext(), "Invalid shelter :(", Toast.LENGTH_SHORT).show();
+            return;
+        }
         Navigator navigator = new Navigator((Activity) root.getContext());
         if (fromAddress) {
             EditText addressEditText = root.findViewById(R.id.addressEditText);
             Address address = navigator.getLatLng(addressEditText.getText().toString());
+
             addShelterHelper(newShelter, visualGuides, address.getLatitude(), address.getLongitude(), db);
 
         } else {
@@ -163,6 +170,10 @@ public class AddShelterDetails extends Fragment {
         }
 
 
+    }
+
+    private boolean validate(Shelter newShelter) {
+        return newShelter.getName().length() > 0 && newShelter.getDescription().length() > 0;
     }
 
     private void addShelterHelper(Shelter shelter, List<ShelterVisualGuide> visualGuides, double lat, double lng, ShelterDB db) {

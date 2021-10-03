@@ -29,9 +29,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
-public class Navigator {
+public class Navigator implements ActivityCompat.OnRequestPermissionsResultCallback {
     private static final String TAG = "NAVIGATOR";
     private Activity activity;
     private Context context;
@@ -52,7 +53,7 @@ public class Navigator {
      */
     public Task<Location> getCurrentLocation() {
         FusedLocationProviderClient fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity);
-        while (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this.activity, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this.activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
         }
         return fusedLocationClient.getLastLocation();
@@ -131,6 +132,11 @@ public class Navigator {
         } catch (IOException e) {
             return null;
         }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
     }
 }

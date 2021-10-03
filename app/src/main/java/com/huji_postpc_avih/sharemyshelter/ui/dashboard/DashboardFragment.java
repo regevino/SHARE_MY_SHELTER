@@ -97,12 +97,12 @@ public class DashboardFragment extends Fragment {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent != null && intent.getAction().equals("Added")) {
+                if (intent != null && intent.getAction().equals("Broadcast")) {
                     adapter.notifyDataSetChanged();
                 }
             }
         };
-        app.registerReceiver(receiver, new IntentFilter("Added"));
+        app.registerReceiver(receiver, new IntentFilter("Broadcast"));
 
 
     }

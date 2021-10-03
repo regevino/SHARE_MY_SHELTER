@@ -1,10 +1,14 @@
 package com.huji_postpc_avih.sharemyshelter;
 
+import android.Manifest;
 import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
+
+import androidx.core.app.ActivityCompat;
 
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,6 +31,8 @@ public class SheltersApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+
         FirebaseApp.initializeApp(this);
         firebaseApp = FirebaseFirestore.getInstance();
         userManager = UserManagerFirebase.getInstance();

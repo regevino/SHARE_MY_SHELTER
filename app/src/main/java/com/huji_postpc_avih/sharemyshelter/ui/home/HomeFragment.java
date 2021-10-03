@@ -1,7 +1,10 @@
 package com.huji_postpc_avih.sharemyshelter.ui.home;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.MatrixCursor;
@@ -48,6 +51,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
     private SimpleCursorAdapter mAdapter;
+    private BroadcastReceiver receiver;
+
     SheltersApp app;
     private static final String[] SUGGESTIONS = {
             "Bauru", "Sao Paulo", "Rio de Janeiro",
@@ -179,7 +184,17 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 return false;
             }
         });
-        showShelters(googleMap);
+//        showShelters(googleMap);
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (intent != null && intent.getAction().equals("Broadcast")) {
+                    showShelters(googleMap);
+                }
+            }
+        };
+        app.registerReceiver(receiver, new IntentFilter("Broadcast"));
         googleMap.setIndoorEnabled(false);
         if (ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this.getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
@@ -217,18 +232,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                     .setTag(shelter);
 
         }
-        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 12.0f));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latlng, 16.0f));
 
     }
 
     // You must implements your logic to get data using OrmLite
     private void populateAdapter(String query) {
-        final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "shelter","id"});
+        final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "shelter", "id"});
         ArrayList<Shelter> allShelters = app.getDb().getAllShelters();
         for (int i = 0; i < allShelters.size(); i++) {
             String shelterName = allShelters.get(i).getName();
             if (Substr(query.toLowerCase(), shelterName.toLowerCase()) != -1)
-                c.addRow(new Object[]{i, shelterName,allShelters.get(i).getId().toString()});
+                c.addRow(new Object[]{i, shelterName, allShelters.get(i).getId().toString()});
         }
         mAdapter.changeCursor(c);
     }

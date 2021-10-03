@@ -78,7 +78,8 @@ public class ShelterDB {
                 allShelters.addShelter(shelter);
             }
 
-            app.sendBroadcast(new Intent("Added"));
+
+            app.sendBroadcast(new Intent("Broadcast"));
         });
     }
 
@@ -162,7 +163,7 @@ public class ShelterDB {
             @Override
             public void onSuccess(Void unused) {
                 userShelters.deleteShelter(shelterId);
-                app.sendBroadcast(new Intent("Added"));
+                app.sendBroadcast(new Intent("Broadcast"));
                 deleteShelterRefFromUser(shelterId);
                 deleteImagesOfShelter(shelterId);
                 updateLocalShelterLists();
