@@ -215,7 +215,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 80,
                 getResources().getDisplayMetrics());
         rlp.setMargins(margin, margin, margin, margin);
-
+        showShelters(googleMap);
     }
 
     private void showShelters(GoogleMap googleMap) {
