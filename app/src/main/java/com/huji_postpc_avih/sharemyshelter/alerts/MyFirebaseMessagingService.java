@@ -154,7 +154,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                             .setContentTitle("Red Alert!")
                             .setContentText("Red Alert in your area")
                             .setPriority(NotificationCompat.PRIORITY_MAX)
-                            .setFullScreenIntent(fullScreenPendingIntent, true);
+                            .setFullScreenIntent(fullScreenPendingIntent, true)
+                            .addAction(R.drawable.ic_alert_notification, "Dismiss", dismissPendingIntent)
+                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
 
             Notification notification = notificationBuilder.build();
 
