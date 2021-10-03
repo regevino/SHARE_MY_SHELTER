@@ -22,9 +22,6 @@ public class ShelterStorage {
     private ShelterStorage(Context c) {
         app = (SheltersApp) c.getApplicationContext();
         firebaseStorage = app.getStorageRef();
-//        firebase = app.getFirebaseApp();
-//        manager = app.getUserManager();
-
 
     }
 

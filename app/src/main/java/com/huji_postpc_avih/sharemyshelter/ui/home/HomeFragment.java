@@ -40,11 +40,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.ArrayList;
+import java.util.UUID;
+
 public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     private HomeViewModel homeViewModel;
     private FragmentHomeBinding binding;
     private SimpleCursorAdapter mAdapter;
+    SheltersApp app;
     private static final String[] SUGGESTIONS = {
             "Bauru", "Sao Paulo", "Rio de Janeiro",
             "Bahia", "Mato Grosso", "Minas Gerais",
@@ -55,10 +59,13 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                              ViewGroup container, Bundle savedInstanceState) {
 //        homeViewModel =
 //                new ViewModelProvider(this).get(HomeViewModel.class);
+
         FragmentManager fm = getChildFragmentManager();
         SupportMapFragment mapFragment = (SupportMapFragment) fm.findFragmentByTag("mapFragment");
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
+        app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
+
         View root = binding.getRoot();
         if (mapFragment == null) {
             mapFragment = new SupportMapFragment();
@@ -100,15 +107,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         });
 
         SearchView searchView = root.findViewById(R.id.search_bar);
-        final String[] from = new String[] {"cityName"};
-        final int[] to = new int[] {android.R.id.text1};
+        final String[] from = new String[]{"shelter", "id"};
+        final int[] to = new int[]{R.id.suggestionName, 0};
         mAdapter = new SimpleCursorAdapter(getContext(), R.layout.simple_list_item_1, null, from, to, CursorAdapter.FLAG_REGISTER_CONTENT_OBSERVER);
         searchView.setSuggestionsAdapter(mAdapter);
         searchView.setOnSuggestionListener(new SearchView.OnSuggestionListener() {
             @Override
             public boolean onSuggestionSelect(int position) {
                 Cursor cursor = (Cursor) mAdapter.getItem(position);
-                String txt = cursor.getString(cursor.getColumnIndex("cityName"));
+                String txt = cursor.getString(cursor.getColumnIndex("shelter"));
                 searchView.setQuery(txt, true);
                 return true;
             }
@@ -116,6 +123,18 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public boolean onSuggestionClick(int position) {
                 // Your code here
+                Cursor cursor = (Cursor) mAdapter.getItem(position);
+
+                String id = cursor.getString(cursor.getColumnIndex("id"));
+
+                Shelter shelter = app.getDb().getShelterById(UUID.fromString(id));
+
+
+                Intent intent = new Intent(getActivity(), ShelterPreviewActivity.class);
+                intent.putExtra("name", shelter.getName());
+                intent.putExtra("description", shelter.getDescription());
+                intent.putExtra("id", shelter.getId());
+                startActivity(intent);
                 return true;
             }
         });
@@ -185,7 +204,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void showShelters(GoogleMap googleMap) {
-        SheltersApp app = (SheltersApp) binding.getRoot().getContext().getApplicationContext();
         ShelterDB db = app.getDb();
         LatLng latlng = new LatLng(31.771959, 35.217018); //default...
         for (Shelter shelter : db.getAllShelters()) {
@@ -205,10 +223,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     // You must implements your logic to get data using OrmLite
     private void populateAdapter(String query) {
-        final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "cityName"});
-        for (int i = 0; i < SUGGESTIONS.length; i++) {
-            if (Substr(query.toLowerCase(), SUGGESTIONS[i].toLowerCase()) != -1)
-                c.addRow(new Object[]{i, SUGGESTIONS[i]});
+        final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "shelter","id"});
+        ArrayList<Shelter> allShelters = app.getDb().getAllShelters();
+        for (int i = 0; i < allShelters.size(); i++) {
+            String shelterName = allShelters.get(i).getName();
+            if (Substr(query.toLowerCase(), shelterName.toLowerCase()) != -1)
+                c.addRow(new Object[]{i, shelterName,allShelters.get(i).getId().toString()});
         }
         mAdapter.changeCursor(c);
     }
