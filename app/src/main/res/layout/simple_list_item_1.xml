@@ -5,9 +5,11 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/suggestionName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="name"
+        android:textSize="20sp"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -205,12 +205,30 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
     // You must implements your logic to get data using OrmLite
     private void populateAdapter(String query) {
-        final MatrixCursor c = new MatrixCursor(new String[]{ BaseColumns._ID, "cityName" });
-        for (int i=0; i<SUGGESTIONS.length; i++) {
-            if (SUGGESTIONS[i].toLowerCase().startsWith(query.toLowerCase()))
-                c.addRow(new Object[] {i, SUGGESTIONS[i]});
+        final MatrixCursor c = new MatrixCursor(new String[]{BaseColumns._ID, "cityName"});
+        for (int i = 0; i < SUGGESTIONS.length; i++) {
+            if (Substr(query.toLowerCase(), SUGGESTIONS[i].toLowerCase()) != -1)
+                c.addRow(new Object[]{i, SUGGESTIONS[i]});
         }
         mAdapter.changeCursor(c);
     }
 
+    private int Substr(String s2, String s1) {
+        int counter = 0; //pointing s2
+        int i = 0;
+        for (; i < s1.length(); i++) {
+            if (counter == s2.length())
+                break;
+            if (s2.charAt(counter) == s1.charAt(i)) {
+                counter++;
+            } else {
+                //Special case where character preceding the i'th character is duplicate
+                if (counter > 0) {
+                    i -= counter;
+                }
+                counter = 0;
+            }
+        }
+        return counter < s2.length() ? -1 : i - counter;
+    }
 }
