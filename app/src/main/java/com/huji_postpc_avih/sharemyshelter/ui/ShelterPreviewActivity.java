@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.location.Address;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -53,7 +54,14 @@ public class ShelterPreviewActivity extends AppCompatActivity {
         rv.addItemDecoration(new LinePagerIndicatorDecoration());
         Navigator navigator = new Navigator(this);
         String address = navigator.getAddress(shelter.getLng(), shelter.getLat());
-        Log.i("testAddress", address);
-
+        if (address != null) {
+            TextView addressTextView = findViewById(R.id.addressTextView);
+            addressTextView.setText("Address: ".concat(address));
+            Log.i("testAddress", address);
+////        Address address1 = navigator.getLatLng("20 hatayasim jerusalem");
+//            Address address1 = navigator.getLatLng("הטייסים 20 ירושלים");
+//            Log.i("testAddress", String.valueOf(address1.getLatitude()));
+//            Log.i("testAddress", String.valueOf(address1.getLongitude()));
+        }
     }
 }

@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#2CC6AFAF"
     tools:context=".ui.home.HomeFragment">
 
     <LinearLayout
@@ -23,12 +24,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <SearchView
+
         android:id="@+id/search_bar"
+        style="@android:style/Widget.Material.SearchView"
         android:layout_width="180dp"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="#EECCDDDA"
         android:iconifiedByDefault="false"
         android:queryHint="Search"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/fragmentContainer"/>
+        app:layout_constraintTop_toTopOf="@id/fragmentContainer" />
 </androidx.constraintlayout.widget.ConstraintLayout>

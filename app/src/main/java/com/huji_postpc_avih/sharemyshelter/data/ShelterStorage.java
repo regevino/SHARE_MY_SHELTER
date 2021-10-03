@@ -6,16 +6,11 @@ import android.graphics.Bitmap;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 
-import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 
 public class ShelterStorage {
     private static final int MB = 1024 * 1024;
@@ -27,9 +22,6 @@ public class ShelterStorage {
     private ShelterStorage(Context c) {
         app = (SheltersApp) c.getApplicationContext();
         firebaseStorage = app.getStorageRef();
-//        firebase = app.getFirebaseApp();
-//        manager = app.getUserManager();
-
 
     }
 
@@ -54,6 +46,12 @@ public class ShelterStorage {
     public Task<byte[]> downloadBitmapFromImages(String path) {
         StorageReference reference = firebaseStorage.getReference();
         Task<byte[]> task = reference.child("images/".concat(path)).getBytes(10 * MB);
+        return task;
+    }
+
+    public Task<Void> deleteImage(String path) {
+        StorageReference reference = firebaseStorage.getReference();
+        Task<Void> task = reference.child("images/".concat(path)).delete();
         return task;
     }
 

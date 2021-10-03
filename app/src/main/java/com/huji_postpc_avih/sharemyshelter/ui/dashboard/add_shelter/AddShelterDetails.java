@@ -1,6 +1,7 @@
 package com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter;
 
 import android.app.Activity;
+import android.location.Address;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -34,6 +35,7 @@ import java.util.List;
 public class AddShelterDetails extends Fragment {
     private Location location;
     private View root;
+    private boolean fromAddress;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -79,7 +81,7 @@ public class AddShelterDetails extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_add_shelter_details, container, false);
         Spinner dropdown = root.findViewById(R.id.locationSpinner);
-        String[] items = new String[]{"Current Location", "Choose from Map"};
+        String[] items = new String[]{"Current Location", "Insert address"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_dropdown_item, items);
         dropdown.setAdapter(adapter);
 
@@ -88,12 +90,14 @@ public class AddShelterDetails extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String choice = dropdown.getSelectedItem().toString();
                 if (choice.equals("Current Location")) {
+                    fromAddress = false;
+                    hideInsertAddress();
                     if (location != null) {
                         Toast.makeText(getActivity(), location.toString(), Toast.LENGTH_LONG).show();
                     }
                 } else {
-                    //TODO let user enter address
-
+                    fromAddress = true;
+                    showInsertAddress();
                 }
             }
 
@@ -114,10 +118,18 @@ public class AddShelterDetails extends Fragment {
         return root;
     }
 
+    private void hideInsertAddress() {
+        root.findViewById(R.id.addressEditText).setVisibility(View.INVISIBLE);
+
+    }
+
+    private void showInsertAddress() {
+        root.findViewById(R.id.addressEditText).setVisibility(View.VISIBLE);
+    }
+
     public void AddShelter(List<ShelterVisualGuide> visualGuides) {
         SheltersApp app = (SheltersApp) root.getContext().getApplicationContext();
         ShelterDB db = app.getDb();
-        ShelterStorage storage = app.getShelterStorage();
         String currentUser = db.getManager().getCurrentUser();
         Shelter newShelter;
         EditText name = root.findViewById(R.id.step_number);
@@ -130,24 +142,39 @@ public class AddShelterDetails extends Fragment {
         } else {
             newShelter = new Shelter(null, name.getText().toString(), Shelter.ShelterType.PUBLIC, null, desc.getText().toString());
         }
+
         Navigator navigator = new Navigator((Activity) root.getContext());
-        navigator.getCurrentLocation().addOnSuccessListener(location -> {
-            if (location == null) {
-                Toast.makeText(root.getContext(), "Failed to add new shelter :(", Toast.LENGTH_LONG).show();
-                return;
-            }
+        if (fromAddress) {
+            EditText addressEditText = root.findViewById(R.id.addressEditText);
+            Address address = navigator.getLatLng(addressEditText.getText().toString());
+            addShelterHelper(newShelter, visualGuides, address.getLatitude(), address.getLongitude(), db);
 
-            newShelter.setLat(location.getLatitude());
-            newShelter.setLng(location.getLongitude());
-            newShelter.set_visualStepsLiveData(visualGuides);
-            if (newShelter.getShelterType() == Shelter.ShelterType.PRIVATE) {
-                db.addPrivateShelter(newShelter);
-            } else {
-                db.addPublicShelter(newShelter);
-            }
+        } else {
+            navigator.getCurrentLocation().addOnSuccessListener(location -> {
+                if (location == null) {
+                    Toast.makeText(root.getContext(), "Failed to add new shelter :(", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addShelterHelper(newShelter, visualGuides, location.getLatitude(), location.getLongitude(), db);
 
-            Toast.makeText(root.getContext(), "Shelter added successfully!", Toast.LENGTH_LONG).show();
-        });
+            });
+
+
+        }
+
+
+    }
+
+    private void addShelterHelper(Shelter shelter, List<ShelterVisualGuide> visualGuides, double lat, double lng, ShelterDB db) {
+        shelter.setLat(lat);
+        shelter.setLng(lng);
+        shelter.set_visualStepsLiveData(visualGuides);
+        if (shelter.getShelterType() == Shelter.ShelterType.PRIVATE) {
+            db.addPrivateShelter(shelter);
+        } else {
+            db.addPublicShelter(shelter);
+        }
+        Toast.makeText(root.getContext(), "Shelter added successfully!", Toast.LENGTH_SHORT).show();
 
     }
 }
