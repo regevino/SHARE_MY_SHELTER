@@ -41,7 +41,7 @@ public class UserManagerFirebase implements UserManager {
         auth = FirebaseAuth.getInstance();
         _authenticatedUser = new MutableLiveData<>(null);
         authenticatedUser = _authenticatedUser;
-        _authenticatedUser.setValue(auth.getCurrentUser());
+        _authenticatedUser.setValue(auth.getCurrentUser()); //TODO handle the case in which auth.getCurrentUser() == null
     }
 
 
