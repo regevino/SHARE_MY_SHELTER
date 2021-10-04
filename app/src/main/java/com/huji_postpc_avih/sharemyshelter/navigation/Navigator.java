@@ -88,6 +88,7 @@ public class Navigator implements ActivityCompat.OnRequestPermissionsResultCallb
     public Shelter getNearestShelter(double startLng, double startLat, List<Shelter> shelters, long deadline) {
 
         for (Shelter sh : shelters) {
+            //TODO: iterate only "open" shelters.
             DirectionsResult directions = getDirections(new LatLng(startLat, startLng), new LatLng(sh.getLat(), sh.getLng()));
             DirectionsRoute[] routes = directions.routes;
             if (routes == null) {
