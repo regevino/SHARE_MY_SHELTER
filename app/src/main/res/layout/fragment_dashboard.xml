@@ -76,12 +76,12 @@
         android:id="@+id/youHaveNoShelters"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="30dp"
+        android:layout_margin="40dp"
         android:gravity="center"
-        android:text="You haven't added shelters yet,\n\nStart contribute now!"
-        android:textSize="35sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="You haven't added shelters yet!\nStart contribute now!"
+        android:textSize="30sp"
+        android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/textView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

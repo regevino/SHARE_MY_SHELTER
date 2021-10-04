@@ -31,6 +31,7 @@ public class AlertRecievedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert_recieved);
 
+
         arrivalDeadline = new Date(getIntent().getLongExtra(NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME, new Date().getTime()));
 
         // Important: have to do the following in order to show without unlocking
@@ -52,30 +53,33 @@ public class AlertRecievedActivity extends AppCompatActivity {
         });
     }
 
-    private void onShelterFound(Shelter sh, double [] currentLocation, Date arrivalDeadline)
-    {
-        if (sh == null)
-        {
+    private void onShelterFound(Shelter sh, double[] currentLocation, Date arrivalDeadline) {
+        if (sh == null) {
             Toast.makeText(this, "Could not fund nearby shelter.", Toast.LENGTH_LONG).show();
-            finish();
+            findViewById(R.id.alert_recieved_waiting_layout).setVisibility(View.GONE);
+            findViewById(R.id.no_shelter_instructions).setVisibility(View.VISIBLE);
+//            finish();
+
+        } else {
+            findViewById(R.id.no_shelter_instructions).setVisibility(View.INVISIBLE);
+
+            findViewById(R.id.alert_recieved_waiting_layout).setVisibility(View.GONE);
+            findViewById(R.id.alert_recieved_found_layout).setVisibility(View.VISIBLE);
+            Button button = findViewById(R.id.alert_recieved_navigate_button);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(AlertRecievedActivity.this, NavigateToShelterActivity.class);
+                    intent.putExtra(EXTRA_KEY_SHELTER_ID, sh.getId().toString());
+                    intent.putExtra(EXTRA_KEY_SELF_LOCATION, currentLocation);
+                    intent.putExtra(EXTRA_KEY_END_ALERT_TIME, arrivalDeadline.getTime());
+                    startActivity(intent);
+                }
+            });
         }
-        findViewById(R.id.alert_recieved_waiting_layout).setVisibility(View.GONE);
-        findViewById(R.id.alert_recieved_found_layout).setVisibility(View.VISIBLE);
-        Button button = findViewById(R.id.alert_recieved_navigate_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AlertRecievedActivity.this, NavigateToShelterActivity.class);
-                intent.putExtra(EXTRA_KEY_SHELTER_ID, sh.getId().toString());
-                intent.putExtra(EXTRA_KEY_SELF_LOCATION, currentLocation);
-                intent.putExtra(EXTRA_KEY_END_ALERT_TIME, arrivalDeadline.getTime());
-                startActivity(intent);
-            }
-        });
     }
 
-    private static int getRadiousForDeadline(long deadline)
-    {
+    private static int getRadiousForDeadline(long deadline) {
         return 500;
     }
 }
