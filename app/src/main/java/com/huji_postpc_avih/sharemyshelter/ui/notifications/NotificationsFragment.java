@@ -35,7 +35,7 @@ public class NotificationsFragment extends PreferenceFragmentCompat {
         if (userManager.getCurrentUser() != null) {
             getPreferenceManager().findPreference("preference_signout").setVisible(true);
             getPreferenceManager().findPreference("preference_signin").setVisible(false);
-            getPreferenceManager().findPreference("preference_account").setSummary("Signed in as " + userManager.authenticatedUser.getValue().getDisplayName());
+            getPreferenceManager().findPreference("preference_account").setSummary("Signed in as " + userManager.authenticatedUser.getValue().getDisplayName());//TODO handle the case in which auth.getCurrentUser() == null
         } else {
             getPreferenceManager().findPreference("preference_signout").setVisible(false);
             getPreferenceManager().findPreference("preference_signin").setVisible(true);
