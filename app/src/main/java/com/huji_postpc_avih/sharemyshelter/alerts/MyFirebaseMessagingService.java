@@ -87,12 +87,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private long extractDeadlineFromData(Map<String, String> messageData)
     {
-        return new Date().getTime() + 1000 * 60 * 5;
+        int DEFAULT_ALERT_LENGTH_MIN = 2;
+        return new Date().getTime() + 1000 * 60 * 2;
     }
 
     public void testAlert()
     {
-        launchNavigation(new Date().getTime() + 1000 * 60 * 5);
+        int DEFAULT_ALERT_LENGTH_MIN = 2;
+        launchNavigation(new Date().getTime() + 1000 * 60 * DEFAULT_ALERT_LENGTH_MIN);
     }
 
     private void launchNavigation(long arrivalDeadline) {
