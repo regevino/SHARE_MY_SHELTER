@@ -61,7 +61,7 @@ public class AlertRecievedActivity extends AppCompatActivity {
 //            finish();
 
         } else {
-            findViewById(R.id.no_shelter_instructions).setVisibility(View.INVISIBLE);
+            findViewById(R.id.no_shelter_instructions).setVisibility(View.GONE);
 
             findViewById(R.id.alert_recieved_waiting_layout).setVisibility(View.GONE);
             findViewById(R.id.alert_recieved_found_layout).setVisibility(View.VISIBLE);
