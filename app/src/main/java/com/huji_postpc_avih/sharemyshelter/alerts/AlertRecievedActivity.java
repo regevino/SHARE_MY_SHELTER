@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.huji_postpc_avih.sharemyshelter.R;
@@ -31,9 +32,15 @@ public class AlertRecievedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert_recieved);
 
-
+        boolean isTest = getIntent().getBooleanExtra(MyFirebaseMessagingService.EXTRA_IS_TEST, false);
         arrivalDeadline = new Date(getIntent().getLongExtra(NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME, new Date().getTime()));
 
+        if (isTest)
+        {
+            TextView titleText = findViewById(R.id.alert_recieved_title_text);
+            titleText.setText("<TEST> Red Alert at your location demo\n" +
+                    "THIS IS ONLY A TEST AND DOES NOT INDICATE A ROCKET ATTACK");
+        }
         // Important: have to do the following in order to show without unlocking
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,

@@ -38,6 +38,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final String INTENT_ACTION_DISMISS = "Dismiss";
     public static final String EXTRA_NOTIFICATION_ID = "notification_id";
     public static final String EXTRA_IS_FOREGROUND_NOTIFICATION = "Service_to_background";
+    public static final String EXTRA_IS_TEST = "isTest";
 
     public static void initialiseMessaging(Context context)
     {
@@ -71,7 +72,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
             if (remoteMessage.getFrom().equals(ALERTS_TOPIC_NAME)) {
                 if (checkIfInArea(remoteMessage.getData())) {
-                    launchNavigation(extractDeadlineFromData(remoteMessage.getData()));
+                    launchNavigation(extractDeadlineFromData(remoteMessage.getData()), false);
                 }
             }
             if (remoteMessage.getFrom().equals(TEST_MESSAGE_TOPIC_NAME)) {
@@ -96,10 +97,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public void testAlert()
     {
         int DEFAULT_ALERT_LENGTH_MIN = 2;
-        launchNavigation(new Date().getTime() + 1000 * 60 * DEFAULT_ALERT_LENGTH_MIN);
+        launchNavigation(new Date().getTime() + 1000 * 60 * DEFAULT_ALERT_LENGTH_MIN, true);
     }
 
-    private void launchNavigation(long arrivalDeadline) {
+    private void launchNavigation(long arrivalDeadline, boolean isTest) {
 
         BroadcastReceiver b = new BroadcastReceiver() {
             @Override
@@ -115,8 +116,23 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             }
         };
         int notification_id = new Random(123456).nextInt();
+        String title;
+        String description;
 
-        IntentFilter intentFilter = new IntentFilter();
+        if (isTest)
+        {
+            title = "Testing Red Alert Notifications";
+            description = "This is a test notification for Red Alerts.\n" +
+                    "This DOES NOT indicate a rocket attack.";
+        }
+        else
+        {
+            title = "Red Alert!";
+            description = "Red Alert in your area";
+        }
+
+
+                IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(INTENT_ACTION_DISMISS);
         getApplicationContext().registerReceiver(b, intentFilter);
         Intent dismissIntent = new Intent();
@@ -126,14 +142,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Intent fullScreenIntent = new Intent(this, AlertRecievedActivity.class);
         fullScreenIntent.putExtra(NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME, arrivalDeadline);
+        fullScreenIntent.putExtra(EXTRA_IS_TEST, isTest);
         fullScreenIntent.putExtra(EXTRA_NOTIFICATION_ID, notification_id);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_alert_notification)
-                            .setContentTitle("Red Alert!")
-                            .setContentText("Red Alert in your area")
+                            .setContentTitle(title)
+                            .setContentText(description)
                             .addAction(R.drawable.ic_alert_notification, INTENT_ACTION_DISMISS, dismissPendingIntent)
                             .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
             Notification notification = notificationBuilder.build();
@@ -155,8 +172,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
                             .setSmallIcon(R.drawable.ic_alert_notification)
-                            .setContentTitle("Red Alert!")
-                            .setContentText("Red Alert in your area")
+                            .setContentTitle(title)
+                            .setContentText(description)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setFullScreenIntent(fullScreenPendingIntent, true)
                             .addAction(R.drawable.ic_alert_notification, INTENT_ACTION_DISMISS, dismissPendingIntent)
