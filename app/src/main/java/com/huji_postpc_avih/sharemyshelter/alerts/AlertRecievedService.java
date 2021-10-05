@@ -118,7 +118,7 @@ public class AlertRecievedService extends Service {
         Intent dismissIntent = new Intent(this, this.getClass());
         dismissIntent.setAction(ACTION_DISMISS_ALERT);
 
-        PendingIntent dismissPendingIntent = PendingIntent.getService(this, 0, dismissIntent, 0 );
+        PendingIntent dismissPendingIntent = PendingIntent.getService(this, 0, dismissIntent, PendingIntent.FLAG_UPDATE_CURRENT );
         Intent fullScreenIntent = new Intent(this, AlertRecievedActivity.class);
         fullScreenIntent.putExtra(EXTRA_KEY_DEADLINE, arrivalDeadline);
         fullScreenIntent.putExtra(EXTRA_IS_TEST, isTest);
@@ -130,7 +130,7 @@ public class AlertRecievedService extends Service {
                             .setContentTitle(title)
                             .setContentText(description)
                             .addAction(R.drawable.ic_alert_notification, "Dismiss", dismissPendingIntent)
-                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
+                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT));
             Notification notification = notificationBuilder.build();
             NotificationManagerCompat.from(this).notify(notification_id, notification);
 
