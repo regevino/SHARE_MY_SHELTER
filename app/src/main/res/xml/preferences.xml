@@ -4,32 +4,30 @@
 
     <PreferenceCategory android:title="Account">
         <Preference
-            android:title="Account"
-            android:key="preference_account"/>
+            android:key="preference_account"
+            android:title="Account" />
         <Preference
-            android:title="Sign-in"
-            android:key="preference_signin">
+            android:key="preference_signin"
+            android:title="Sign-in">
             <intent
-                android:targetPackage="com.huji_postpc_avih.sharemyshelter"
                 android:targetClass="com.huji_postpc_avih.sharemyshelter.users.SignInActivity"
-                />
+                android:targetPackage="com.huji_postpc_avih.sharemyshelter" />
         </Preference>
         <Preference
-            android:title="Sign-out"
             android:key="preference_signout"
-            >
-        </Preference>
+            android:title="Sign-out"></Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="Notifications">
-    </PreferenceCategory>
+    <PreferenceCategory android:title="Notifications"></PreferenceCategory>
     <PreferenceCategory android:title="Emergency Navigation">
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/map_type_entries"
             android:entryValues="@array/map_type_values"
             android:key="list_preference_map_types"
-            android:title="Map Type"
-            />
-
+            android:title="Map Type" />
+        <Preference
+            android:key="preference_send_test_alert"
+            android:summary="Send a test alert and start navigation to nearest shelter"
+            android:title="Send Test Alert" />
     </PreferenceCategory>
 </PreferenceScreen>

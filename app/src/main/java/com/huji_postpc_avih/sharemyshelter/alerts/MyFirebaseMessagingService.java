@@ -31,15 +31,17 @@ import androidx.core.app.NotificationManagerCompat;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private static final String TAG = "FCMService";
-    public static final String ALERTS_TOPIC = "/topics/Alerts";
-    public static final String TEST_MESSAGE_TOPIC_PREFIX = "/topics/test_message";
+    public static final String ALERTS_TOPIC_NAME = "/topics/Alerts";
+    public static final String SUBSCRIBE_ALERTS_TOPIC = "Alerts";
+    public static final String SUBSCRIBE_TEST_MESSAGE_TOPIC = "Test-Alerts";
+    public static final String TEST_MESSAGE_TOPIC_NAME = "/topics/Test-Alerts";
     public static final String INTENT_ACTION_DISMISS = "Dismiss";
     public static final String EXTRA_NOTIFICATION_ID = "notification_id";
     public static final String EXTRA_IS_FOREGROUND_NOTIFICATION = "Service_to_background";
 
     public static void initialiseMessaging(Context context)
     {
-        FirebaseMessaging.getInstance().subscribeToTopic(ALERTS_TOPIC)
+        FirebaseMessaging.getInstance().subscribeToTopic(SUBSCRIBE_ALERTS_TOPIC)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
@@ -67,13 +69,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (remoteMessage.getFrom().equals(ALERTS_TOPIC)) {
+            if (remoteMessage.getFrom().equals(ALERTS_TOPIC_NAME)) {
                 if (checkIfInArea(remoteMessage.getData())) {
                     launchNavigation(extractDeadlineFromData(remoteMessage.getData()));
                 }
             }
-            if (remoteMessage.getFrom().startsWith(TEST_MESSAGE_TOPIC_PREFIX)) {
-                FirebaseMessaging.getInstance().unsubscribeFromTopic(remoteMessage.getFrom());
+            if (remoteMessage.getFrom().equals(TEST_MESSAGE_TOPIC_NAME)) {
+                FirebaseMessaging.getInstance().unsubscribeFromTopic(SUBSCRIBE_TEST_MESSAGE_TOPIC);
                 testAlert();
             }
 
