@@ -2,14 +2,12 @@ package com.huji_postpc_avih.sharemyshelter.data;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.firebase.geofire.GeoFireUtils;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQueryBounds;
 import com.google.android.gms.tasks.Continuation;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
@@ -26,7 +24,6 @@ import com.huji_postpc_avih.sharemyshelter.users.UserManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -193,6 +190,7 @@ public class ShelterDB {
         final List<Task<QuerySnapshot>> tasks = new ArrayList<>();
         for (GeoQueryBounds b : bounds) {
             Query q = firebase.collection(SHELTERS)
+                    .whereEqualTo("open", true)
                     .orderBy("geoHashForLocation")
                     .startAt(b.startHash)
                     .endAt(b.endHash);
