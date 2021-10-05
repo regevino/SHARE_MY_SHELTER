@@ -38,7 +38,6 @@ public class AlertRecievedService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
@@ -173,7 +172,6 @@ public class AlertRecievedService extends Service {
             {
                 NotificationManagerCompat.from(this).notify(notification_id, notification);
             }
-            // TODO Make sure service is moved back to background later.
         }
     }
 }

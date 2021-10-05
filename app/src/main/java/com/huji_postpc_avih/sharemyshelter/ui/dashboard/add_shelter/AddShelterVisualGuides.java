@@ -2,11 +2,6 @@ package com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +13,10 @@ import com.huji_postpc_avih.sharemyshelter.ui.dashboard.add_shelter.add_shelter_
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,7 +38,6 @@ public class AddShelterVisualGuides extends Fragment {
      *
      * @return A new instance of fragment AddShelterVisualGuides.
      */
-    // TODO: Rename and change types and number of parameters
     public static AddShelterVisualGuides newInstance() {
         AddShelterVisualGuides fragment = new AddShelterVisualGuides();
         Bundle args = new Bundle();
