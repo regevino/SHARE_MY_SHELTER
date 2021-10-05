@@ -122,6 +122,12 @@ public class AlertRecievedService extends Service {
         Intent fullScreenIntent = new Intent(this, AlertRecievedActivity.class);
         fullScreenIntent.putExtra(EXTRA_KEY_DEADLINE, arrivalDeadline);
         fullScreenIntent.putExtra(EXTRA_IS_TEST, isTest);
+        fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+        fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+        fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+        fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
 
             NotificationCompat.Builder notificationBuilder =
@@ -135,18 +141,15 @@ public class AlertRecievedService extends Service {
             NotificationManagerCompat.from(this).notify(notification_id, notification);
 
             if (show_popup) {
-                fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-                fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
                 getApplication().startActivity(fullScreenIntent);
             }
         }
         else {
             Log.d(TAG, "Starting with full screen intent");
             fullScreenIntent.putExtra(EXTRA_IS_FOREGROUND_NOTIFICATION, true);
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
             PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
-                    fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    fullScreenIntent, PendingIntent.FLAG_ONE_SHOT);
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
@@ -159,6 +162,7 @@ public class AlertRecievedService extends Service {
 
             if (show_popup)
             {
+
                 notificationBuilder.setFullScreenIntent(fullScreenPendingIntent, true);
             }
             Notification notification = notificationBuilder.build();
