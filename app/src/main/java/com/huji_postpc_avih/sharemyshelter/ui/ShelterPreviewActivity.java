@@ -1,19 +1,10 @@
 package com.huji_postpc_avih.sharemyshelter.ui;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
-import android.location.Address;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
@@ -22,6 +13,11 @@ import com.huji_postpc_avih.sharemyshelter.navigation.visualGuidesView.ImageStep
 import com.huji_postpc_avih.sharemyshelter.navigation.visualGuidesView.LinePagerIndicatorDecoration;
 
 import java.util.UUID;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ShelterPreviewActivity extends AppCompatActivity {
 
@@ -52,6 +48,7 @@ public class ShelterPreviewActivity extends AppCompatActivity {
         rv.setHasFixedSize(true);
         rv.setAdapter(adapter);
         rv.addItemDecoration(new LinePagerIndicatorDecoration());
+        new PagerSnapHelper().attachToRecyclerView(rv);
         Navigator navigator = new Navigator(this);
         String address = navigator.getAddress(shelter.getLng(), shelter.getLat());
         if (address != null) {
