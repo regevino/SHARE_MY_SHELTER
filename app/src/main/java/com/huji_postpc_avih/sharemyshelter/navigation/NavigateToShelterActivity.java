@@ -1,6 +1,7 @@
 package com.huji_postpc_avih.sharemyshelter.navigation;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -29,6 +30,7 @@ import com.google.maps.model.DirectionsStep;
 import com.google.maps.model.EncodedPolyline;
 import com.huji_postpc_avih.sharemyshelter.R;
 import com.huji_postpc_avih.sharemyshelter.SheltersApp;
+import com.huji_postpc_avih.sharemyshelter.alerts.AlertRecievedService;
 import com.huji_postpc_avih.sharemyshelter.data.Shelter;
 import com.huji_postpc_avih.sharemyshelter.data.ShelterDB;
 import com.huji_postpc_avih.sharemyshelter.navigation.visualGuidesView.ImageStepAdapter;
@@ -55,7 +57,6 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
 
     public static final String EXTRA_KEY_SHELTER_ID = "target_shelter";
     public static final String EXTRA_KEY_SELF_LOCATION = "start_position";
-    public static final String EXTRA_KEY_END_ALERT_TIME = "end_alert_time";
     private Shelter targetShelter;
     private double startLong;
     private double startLat;
@@ -74,13 +75,15 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
 
         setContentView(R.layout.activity_navigate_to_shelter);
 
+
+
         db = ((SheltersApp) getApplication()).getDb();
 
         targetShelter = db.getShelterById(UUID.fromString(getIntent().getStringExtra(EXTRA_KEY_SHELTER_ID)));
         double[] loc = getIntent().getDoubleArrayExtra(EXTRA_KEY_SELF_LOCATION);
         startLong = loc[0];
         startLat = loc[1];
-        arrivalDeadline = new Date(getIntent().getLongExtra(EXTRA_KEY_END_ALERT_TIME, new Date().getTime()));
+        arrivalDeadline = new Date(getIntent().getLongExtra(AlertRecievedService.EXTRA_KEY_DEADLINE, new Date().getTime()));
 
         RecyclerView imagesRecycler = findViewById(R.id.visual_guides_recycler);
         ImageStepAdapter imageStepAdapter = new ImageStepAdapter(findViewById(R.id.navigate_to_shelter_fullscreen_image), targetShelter, this, this);
@@ -106,6 +109,9 @@ public class NavigateToShelterActivity extends AppCompatActivity implements OnMa
 
             public void onFinish() {
                 timerText.setText("Remaining Time:\n00:00\nFind Cover!");
+                Intent intent = new Intent(NavigateToShelterActivity.this, AlertRecievedService.class);
+                intent.setAction(AlertRecievedService.ACTION_DISMISS_ALERT);
+                startService(intent);
             }
         }.start();
 

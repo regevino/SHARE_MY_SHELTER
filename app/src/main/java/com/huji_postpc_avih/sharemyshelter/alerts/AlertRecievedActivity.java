@@ -19,7 +19,6 @@ import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.huji_postpc_avih.sharemyshelter.navigation.NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME;
 import static com.huji_postpc_avih.sharemyshelter.navigation.NavigateToShelterActivity.EXTRA_KEY_SELF_LOCATION;
 import static com.huji_postpc_avih.sharemyshelter.navigation.NavigateToShelterActivity.EXTRA_KEY_SHELTER_ID;
 
@@ -32,8 +31,8 @@ public class AlertRecievedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alert_recieved);
 
-        boolean isTest = getIntent().getBooleanExtra(MyFirebaseMessagingService.EXTRA_IS_TEST, false);
-        arrivalDeadline = new Date(getIntent().getLongExtra(NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME, new Date().getTime()));
+        boolean isTest = getIntent().getBooleanExtra(AlertRecievedService.EXTRA_IS_TEST, false);
+        arrivalDeadline = new Date(getIntent().getLongExtra(AlertRecievedService.EXTRA_KEY_DEADLINE, new Date().getTime()));
 
         if (isTest)
         {
@@ -79,7 +78,10 @@ public class AlertRecievedActivity extends AppCompatActivity {
                     Intent intent = new Intent(AlertRecievedActivity.this, NavigateToShelterActivity.class);
                     intent.putExtra(EXTRA_KEY_SHELTER_ID, sh.getId().toString());
                     intent.putExtra(EXTRA_KEY_SELF_LOCATION, currentLocation);
-                    intent.putExtra(EXTRA_KEY_END_ALERT_TIME, arrivalDeadline.getTime());
+                    intent.putExtra(AlertRecievedService.EXTRA_KEY_DEADLINE, arrivalDeadline.getTime());
+                    intent.putExtra(AlertRecievedService.EXTRA_IS_FOREGROUND_NOTIFICATION,
+                            AlertRecievedActivity.this.getIntent()
+                                    .getBooleanExtra(AlertRecievedService.EXTRA_IS_FOREGROUND_NOTIFICATION, false));
                     startActivity(intent);
                 }
             });

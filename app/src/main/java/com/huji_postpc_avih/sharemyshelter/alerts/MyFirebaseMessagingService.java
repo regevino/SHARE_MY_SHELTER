@@ -1,12 +1,7 @@
 package com.huji_postpc_avih.sharemyshelter.alerts;
 
-import android.app.Notification;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -15,17 +10,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.huji_postpc_avih.sharemyshelter.R;
-import com.huji_postpc_avih.sharemyshelter.SheltersApp;
-import com.huji_postpc_avih.sharemyshelter.navigation.NavigateToShelterActivity;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.Random;
 
 import androidx.annotation.NonNull;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
@@ -37,8 +26,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public static final String TEST_MESSAGE_TOPIC_NAME = "/topics/Test-Alerts";
     public static final String INTENT_ACTION_DISMISS = "Dismiss";
     public static final String EXTRA_NOTIFICATION_ID = "notification_id";
-    public static final String EXTRA_IS_FOREGROUND_NOTIFICATION = "Service_to_background";
-    public static final String EXTRA_IS_TEST = "isTest";
+
 
     public static void initialiseMessaging(Context context)
     {
@@ -69,15 +57,19 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         // Check if message contains a data payload.
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
-
+            Intent intent = new Intent(getBaseContext(), AlertRecievedService.class);
             if (remoteMessage.getFrom().equals(ALERTS_TOPIC_NAME)) {
                 if (checkIfInArea(remoteMessage.getData())) {
-                    launchNavigation(extractDeadlineFromData(remoteMessage.getData()), false);
+                    intent.putExtra(AlertRecievedService.EXTRA_KEY_DEADLINE, extractDeadlineFromData(remoteMessage.getData()));
+                    intent.setAction(AlertRecievedService.ACTION_ALERT_RECIEVED);
+                    startService(intent);
                 }
             }
             if (remoteMessage.getFrom().equals(TEST_MESSAGE_TOPIC_NAME)) {
                 FirebaseMessaging.getInstance().unsubscribeFromTopic(SUBSCRIBE_TEST_MESSAGE_TOPIC);
-                testAlert();
+
+                intent.setAction(AlertRecievedService.ACTION_TEST);
+                startService(intent);
             }
 
         }
@@ -94,96 +86,5 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         return new Date().getTime() + 1000 * 60 * 2;
     }
 
-    public void testAlert()
-    {
-        int DEFAULT_ALERT_LENGTH_MIN = 2;
-        launchNavigation(new Date().getTime() + 1000 * 60 * DEFAULT_ALERT_LENGTH_MIN, true);
-    }
-
-    private void launchNavigation(long arrivalDeadline, boolean isTest) {
-
-        BroadcastReceiver b = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                switch (intent.getAction())
-                {
-                    case INTENT_ACTION_DISMISS:
-                        NotificationManagerCompat.from(context).cancel(intent.getIntExtra(EXTRA_NOTIFICATION_ID, -1));;
-                        getApplicationContext().unregisterReceiver(this);
-                    default:
-                        break;
-                }
-            }
-        };
-        int notification_id = new Random(123456).nextInt();
-        String title;
-        String description;
-
-        if (isTest)
-        {
-            title = "Testing Red Alert Notifications";
-            description = "This is a test notification for Red Alerts.\n" +
-                    "This DOES NOT indicate a rocket attack.";
-        }
-        else
-        {
-            title = "Red Alert!";
-            description = "Red Alert in your area";
-        }
-
-
-                IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(INTENT_ACTION_DISMISS);
-        getApplicationContext().registerReceiver(b, intentFilter);
-        Intent dismissIntent = new Intent();
-        dismissIntent.setAction(INTENT_ACTION_DISMISS);
-        dismissIntent.putExtra(EXTRA_NOTIFICATION_ID, notification_id);
-        PendingIntent dismissPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0, dismissIntent, 0);
-
-        Intent fullScreenIntent = new Intent(this, AlertRecievedActivity.class);
-        fullScreenIntent.putExtra(NavigateToShelterActivity.EXTRA_KEY_END_ALERT_TIME, arrivalDeadline);
-        fullScreenIntent.putExtra(EXTRA_IS_TEST, isTest);
-        fullScreenIntent.putExtra(EXTRA_NOTIFICATION_ID, notification_id);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-
-            NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_alert_notification)
-                            .setContentTitle(title)
-                            .setContentText(description)
-                            .addAction(R.drawable.ic_alert_notification, INTENT_ACTION_DISMISS, dismissPendingIntent)
-                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
-            Notification notification = notificationBuilder.build();
-            NotificationManagerCompat.from(this).notify(notification_id, notification);
-
-
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getApplication().startActivity(fullScreenIntent);
-            }
-        else {
-            Log.d(TAG, "Starting with full screen intent");
-            fullScreenIntent.putExtra(EXTRA_IS_FOREGROUND_NOTIFICATION, true);
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
-                    fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            NotificationCompat.Builder notificationBuilder =
-                    new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
-                            .setSmallIcon(R.drawable.ic_alert_notification)
-                            .setContentTitle(title)
-                            .setContentText(description)
-                            .setPriority(NotificationCompat.PRIORITY_MAX)
-                            .setFullScreenIntent(fullScreenPendingIntent, true)
-                            .addAction(R.drawable.ic_alert_notification, INTENT_ACTION_DISMISS, dismissPendingIntent)
-                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
-
-            Notification notification = notificationBuilder.build();
-
-            startForeground(notification_id, notification);
-            // TODO Make sure service is moved back to background later.
-        }
-    }
 
 }
