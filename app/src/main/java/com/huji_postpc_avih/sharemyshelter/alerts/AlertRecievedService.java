@@ -17,6 +17,7 @@ import java.util.Random;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.preference.PreferenceManager;
 
 public class AlertRecievedService extends Service {
 
@@ -43,6 +44,10 @@ public class AlertRecievedService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (intent.getAction() == null)
+        {
+            return super.onStartCommand(intent, flags, startId);
+        }
         if (intent.getAction().equals(ACTION_TEST) && !isNavigating)
         {
             testAlert();
@@ -109,7 +114,7 @@ public class AlertRecievedService extends Service {
         }
 
 
-
+        boolean show_popup = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("preference_show_popup", true);
         isNavigating = true;
         Intent dismissIntent = new Intent(this, this.getClass());
         dismissIntent.setAction(ACTION_DISMISS_ALERT);
@@ -130,10 +135,11 @@ public class AlertRecievedService extends Service {
             Notification notification = notificationBuilder.build();
             NotificationManagerCompat.from(this).notify(notification_id, notification);
 
-
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getApplication().startActivity(fullScreenIntent);
+            if (show_popup) {
+                fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplication().startActivity(fullScreenIntent);
+            }
         }
         else {
             Log.d(TAG, "Starting with full screen intent");
@@ -149,13 +155,24 @@ public class AlertRecievedService extends Service {
                             .setContentTitle(title)
                             .setContentText(description)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
-                            .setFullScreenIntent(fullScreenPendingIntent, true)
-                            .addAction(R.drawable.ic_alert_notification, ACTION_DISMISS_ALERT, dismissPendingIntent)
+                            .addAction(R.drawable.ic_alert_notification, "Dismiss", dismissPendingIntent)
                             .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
 
+            if (show_popup)
+            {
+                notificationBuilder.setFullScreenIntent(fullScreenPendingIntent, true);
+            }
             Notification notification = notificationBuilder.build();
 
-            startForeground(notification_id, notification);
+            if(show_popup)
+            {
+                isForeground = true;
+                startForeground(notification_id, notification);
+            }
+            else
+            {
+                NotificationManagerCompat.from(this).notify(notification_id, notification);
+            }
             // TODO Make sure service is moved back to background later.
         }
     }

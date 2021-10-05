@@ -15,9 +15,17 @@
         </Preference>
         <Preference
             android:key="preference_signout"
-            android:title="Sign-out"></Preference>
+            android:title="Sign-out">
+
+        </Preference>
     </PreferenceCategory>
-    <PreferenceCategory android:title="Notifications"></PreferenceCategory>
+    <PreferenceCategory android:title="Notifications">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="preference_show_popup"
+            android:title="Automatic Popup on Red Alert" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="Emergency Navigation">
         <ListPreference
             android:defaultValue="1"
