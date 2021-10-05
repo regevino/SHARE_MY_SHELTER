@@ -170,6 +170,7 @@ public class UserManagerFirebase implements UserManager {
     public String getCurrentUser() {
         FirebaseUser currentUser = auth.getCurrentUser();
         if (currentUser != null) {
+            _authenticatedUser.setValue(currentUser);
             return currentUser.getUid();
         }
         return null;
