@@ -43,9 +43,9 @@ public class AlertRecievedService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent.getAction() == null)
+        if (intent == null)
         {
-            return super.onStartCommand(intent, flags, startId);
+            return super.onStartCommand(null, flags, startId);
         }
         if (intent.getAction().equals(ACTION_TEST) && !isNavigating)
         {
