@@ -136,7 +136,7 @@ public class AlertRecievedService extends Service {
                             .setContentTitle(title)
                             .setContentText(description)
                             .addAction(R.drawable.ic_alert_notification, "Dismiss", dismissPendingIntent)
-                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT));
             Notification notification = notificationBuilder.build();
             NotificationManagerCompat.from(this).notify(notification_id, notification);
 
@@ -149,7 +149,7 @@ public class AlertRecievedService extends Service {
             Log.d(TAG, "Starting with full screen intent");
             fullScreenIntent.putExtra(EXTRA_IS_FOREGROUND_NOTIFICATION, true);
             PendingIntent fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
-                    fullScreenIntent, PendingIntent.FLAG_ONE_SHOT);
+                    fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
             NotificationCompat.Builder notificationBuilder =
                     new NotificationCompat.Builder(this, SheltersApp.NOTIFICATION_ALERTS_CHANNEL_ID)
@@ -158,7 +158,7 @@ public class AlertRecievedService extends Service {
                             .setContentText(description)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .addAction(R.drawable.ic_alert_notification, "Dismiss", dismissPendingIntent)
-                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, 0));
+                            .addAction(R.drawable.ic_alert_notification, "Navigate", PendingIntent.getActivity(this, 0, fullScreenIntent, PendingIntent.FLAG_CANCEL_CURRENT));
 
             if (show_popup)
             {
